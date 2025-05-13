@@ -121,6 +121,7 @@ function DogCard({
             <span>Health Conditions</span>
             <input
               type="text"
+              maxLength={50}
               value={formData.health_conditions}
               onChange={(e) =>
                 setFormData({ ...formData, health_conditions: e.target.value })

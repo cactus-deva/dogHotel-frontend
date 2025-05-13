@@ -5,7 +5,7 @@ const BASE_URL = `${import.meta.env.VITE_API_URL}/booking`;
 export interface CreateBookingPayload {
   dog_id: string;
   hotelroom_id: string;
-  check_in: string; //YY-MM-DD
+  check_in: string;
   check_out: string;
 }
 
@@ -27,15 +27,17 @@ export const getAvailableRooms = async (
   size: string,
   token: string | null
 ) => {
-    const res = await axios.get(`${BASE_URL}/available`, {
-        params: {
-            check_in, check_out, size
-        },
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-    return res.data
+  const res = await axios.get(`${BASE_URL}/available`, {
+    params: {
+      check_in,
+      check_out,
+      size,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
 };
 
 export const getMyBookings = async (
@@ -60,4 +62,39 @@ export const createBooking = async (
     },
   });
   return res.data;
+};
+
+export const cancelBooking = async (
+  bookingId: number,
+  token: string | null
+) => {
+  try {
+    const res = await axios.delete(`${BASE_URL}/${bookingId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Failed to cancel booking", error);
+    throw error;
+  }
+};
+
+export const updateBooking = async (
+  token: string | null,
+  payload: CreateBookingPayload,
+  bookingId: number
+) => {
+  try {
+    const res = await axios.patch(`${BASE_URL}/${bookingId}`, payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Failed to update booking", error);
+    throw error;
+  }
 };
