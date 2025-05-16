@@ -47,7 +47,6 @@ function BookingPage() {
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
-  const today = new Date().toLocaleDateString("en-GB");
 
   useEffect(() => {
     if (statusMessage) {
@@ -171,9 +170,9 @@ function BookingPage() {
     }
   };
   //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' และfilter upcoming booking & past booking
-
   const filterBookings = bookings.filter((booking) => {
-    const checkOut = new Date(booking.check_out).toLocaleDateString("en-GB");
+      const today = new Date().toLocaleDateString();
+    const checkOut = new Date(booking.check_out).toLocaleDateString();
     if (filterType === "all" && booking.status === "confirmed") {
       return booking;
     } else if (filterType === "past" && booking.status === "confirmed") {
