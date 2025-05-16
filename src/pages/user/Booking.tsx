@@ -5,21 +5,37 @@ import {
   getAvailableRooms,
   cancelBooking,
   updateBooking,
-} from "../../api/bookingApi";
-import { Booking, CreateBookingPayload } from "../../api/bookingApi";
+} from "../../api/userApi/bookingApi";
+import { Booking, CreateBookingPayload } from "../../api/userApi/bookingApi";
 import BookingCard from "../../components/BookingCard";
-import { DogData, getMyDogs } from "../../api/dogApi";
+import { DogData, getMyDogs } from "../../api/userApi/dogApi";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
 import { BookingEditCard } from "../../components/BookingEditCard";
+import { getMyReviews } from "../../api/userApi/reviewApi";
+import ReviewModal from "../../components/ReviewModal";
+
+interface Review {
+  id: number;
+  booking_id: number;
+  rating: number;
+  comment: string;
+}
+
+export type RoomSize = 'S' | 'M' | 'L' | ''
 
 function BookingPage() {
+  const [filterType, setFilterType] = useState<"past" | "upcoming" | "all">(
+    "all"
+  );
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const { setIsLoading } = useLoading();
   const [isEditing, setIsEditing] = useState(false);
   const [editingBookingId, setEditingBookingId] = useState<number | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [dogs, setDogs] = useState<DogData[]>([]);
-  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedSize, setSelectedSize] = useState<RoomSize>('');
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [formData, setFormData] = useState<CreateBookingPayload>({
@@ -31,6 +47,7 @@ function BookingPage() {
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
+  const today = new Date().toLocaleDateString("en-GB");
 
   useEffect(() => {
     if (statusMessage) {
@@ -45,10 +62,20 @@ function BookingPage() {
     try {
       setIsLoading(true);
       const response = await getMyBookings(token, userId);
-      setBookings(response.data);
+      const bookingData = response.data;
+      setBookings(bookingData);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching bookings", error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const res = await getMyReviews(token, userId);
+      setReviews(res.data);
+    } catch (error) {
+      console.error("Error fetching reviews", error);
     }
   };
 
@@ -77,6 +104,7 @@ function BookingPage() {
   useEffect(() => {
     fetchBookings();
     fetchMyDogs(token);
+    fetchReviews();
   }, []);
 
   const fetchAvailableRooms = async () => {
@@ -130,7 +158,6 @@ function BookingPage() {
 
   const handleUpdateBooking = async () => {
     if (!editingBookingId) return;
-
     try {
       await updateBooking(token, formData, editingBookingId);
       setStatusMessage("Booking Update Successfully");
@@ -143,8 +170,32 @@ function BookingPage() {
       );
     }
   };
-  //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' เพื่อเอามาแสดงใน BookingCard
-  const confirmedBooking = bookings.filter((booking) => booking.status === 'confirmed')
+  //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' และfilter upcoming booking & past booking
+
+  const filterBookings = bookings.filter((booking) => {
+    const checkOut = new Date(booking.check_out).toLocaleDateString("en-GB");
+    if (filterType === "all" && booking.status === "confirmed") {
+      return booking;
+    } else if (filterType === "past" && booking.status === "confirmed") {
+      return checkOut < today;
+    } else if (filterType === "upcoming" && booking.status === "confirmed") {
+      return checkOut >= today;
+    } else {
+      return;
+    }
+  });
+  const hasReviewForBooking = (bookingId: number): boolean => {
+    return reviews.some((review) => review.booking_id === bookingId);
+  };
+
+  const handleReviewClick = (booking: Booking) => {
+    setSelectedBooking(booking);
+  };
+
+  const handleReviewSuccess = () => {
+    fetchBookings();
+    fetchReviews();
+  };
 
   return (
     <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-10 overflow-hidden">
@@ -205,7 +256,7 @@ function BookingPage() {
         {/* เลือกขนาดห้อง */}
         <select
           value={selectedSize}
-          onChange={(e) => setSelectedSize(e.target.value)}
+          onChange={(e) => setSelectedSize(e.target.value as RoomSize)}
           className="w-full border border-gray-300 rounded-md p-2 mb-4"
         >
           <option value="">-- เลือกขนาดห้อง --</option>
@@ -240,9 +291,49 @@ function BookingPage() {
           Book Now
         </button>
       </div>
+
       {/* การ์ดแสดง booking */}
+      <div className="flex justify-center my-7 gap-4">
+        <button
+          onClick={() => setFilterType("all")}
+          className={`px-4 py-2 rounded-full ${
+            filterType === "all"
+              ? "bg-[#A88763] text-white"
+              : "bg-gray-200"
+          }`}
+        >
+          All Events
+        </button>
+        <button
+          onClick={() => setFilterType("upcoming")}
+          className={`px-4 py-2 rounded-full ${
+            filterType === "upcoming"
+              ? "bg-[#A88763] text-white"
+              : "bg-gray-200"
+          }`}
+        >
+          Upcoming Events
+        </button>
+        <button
+          onClick={() => setFilterType("past")}
+          className={`px-4 py-2 rounded-full ${
+            filterType === "past" ? "bg-[#A88763] text-white" : "bg-gray-200"
+          }`}
+        >
+          Past Events
+        </button>
+      </div>
+      {selectedBooking && (
+          <ReviewModal
+            bookingId={selectedBooking.booking_id}
+            userId={parseInt(userId || "0")}
+            token={token || ""}
+            onClose={() => setSelectedBooking(null)}
+            onSuccess={handleReviewSuccess}
+          />
+        )}
       <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-6 text-sm md:text-lg md:p-20">
-        {confirmedBooking.map((booking) =>
+        {filterBookings.map((booking) =>
           isEditing && editingBookingId === booking.booking_id ? (
             <BookingEditCard
               key={booking.booking_id}
@@ -265,6 +356,8 @@ function BookingPage() {
               booking={booking}
               onEdit={handleEdit}
               onCancel={handleCancelBooking}
+              hasReview={hasReviewForBooking(booking.booking_id)}
+              onReviewClick={handleReviewClick}
             />
           )
         )}

@@ -69,8 +69,8 @@ function Service() {
           </div>
         ))}
       </div>
-      <div className="flex justify-center w-full h-fit mt-5">
-        <span className="text-xl font-semibold text-[#A88763]">
+      <div className="flex justify-center w-full h-fit mt-30">
+        <span className="text-md md:text-3xl font-semibold text-[#A88763]">
           Check-in & Check-out time 09:00 - 19:00 daily
         </span>
       </div>

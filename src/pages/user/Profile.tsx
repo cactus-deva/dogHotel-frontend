@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUserProfile } from "../../api/userApi";
+import { getUserProfile } from "../../api/userApi/userApi";
 import { Link } from "react-router-dom";
 import ProfileEditCard from "../../components/ProfileEditCard";
 import { useLoading } from "../../context/LoadingContext";
@@ -17,7 +17,7 @@ interface UserData {
 function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [message, setMessage] = useState("");
-  const { isLoading, setIsLoading } = useLoading();
+  const { setIsLoading } = useLoading();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserData | null>(null);
 

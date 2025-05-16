@@ -17,9 +17,11 @@ export interface Booking {
   dog_name: string;
   room_name: string;
   total_price: number;
-  status: string;
+  status: BookingStatus;
   price_per_night: number;
 }
+
+type BookingStatus = 'confirmed' | 'cancelled'
 
 export const getAvailableRooms = async (
   check_in: string,
@@ -98,3 +100,4 @@ export const updateBooking = async (
     throw error;
   }
 };
+

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { loginUser, LoginUserProps } from "../../api/userApi";
+import { loginUser, LoginUserProps } from "../../api/userApi/userApi";
 import logo from "../../assets/logo.png"
 import { useNavigate } from "react-router-dom";
 

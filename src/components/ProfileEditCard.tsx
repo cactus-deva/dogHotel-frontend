@@ -1,4 +1,4 @@
-import { updateUserProfile } from "../api/userApi";
+import { updateUserProfile } from "../api/userApi/userApi";
 interface UserData {
   first_name: string;
   last_name: string;

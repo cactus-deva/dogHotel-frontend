@@ -11,6 +11,7 @@ import Service from './pages/Service'
 import Contact from './pages/Contact';
 import Dog from './pages/user/Dog';
 import { LoadingProvider } from "./context/LoadingContext.tsx";
+import Review from './pages/user/Review.tsx';
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
         <Route path='/service' element={<Service/>} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/dog' element={<Dog />}  />
-        
+        <Route path='/review' element={<Review />} />
       </Routes>
       </LoadingProvider>
       <Footer />

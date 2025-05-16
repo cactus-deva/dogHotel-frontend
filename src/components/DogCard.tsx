@@ -1,5 +1,5 @@
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { DogData, updateDog, deleteDog } from "../api/dogApi";
+import { DogData, updateDog, deleteDog } from "../api/userApi/dogApi";
 import { useState } from "react";
 import ConfirmModal from "./ConfirmModal";
 

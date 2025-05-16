@@ -72,7 +72,7 @@ export const getDogBreeds = async (): Promise<string[]> => {
       } = await response.json();
   
       const breeds: string[] = [];
-  
+    
       for (const breed in data.message) {
         const subBreeds = data.message[breed];
         if (subBreeds.length === 0) {

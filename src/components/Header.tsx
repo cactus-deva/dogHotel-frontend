@@ -52,6 +52,12 @@ function Header() {
               My Booking
             </Link>
           )}
+
+          {token && (
+            <Link to="/review" className="text-gray-700 hover:text-[#A88763]">
+              My Review
+            </Link>
+          )}
           <Link to="/contact" className="text-gray-700 hover:text-[#A88763]">
             Contact
           </Link>

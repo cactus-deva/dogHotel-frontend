@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getMyDogs, createDog, getDogBreeds } from "../../api/dogApi";
+import { getMyDogs, createDog, getDogBreeds } from "../../api/userApi/dogApi";
 import DogCard from "../../components/DogCard";
-import { DogData } from "../../api/dogApi";
+import { DogData } from "../../api/userApi/dogApi";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
 

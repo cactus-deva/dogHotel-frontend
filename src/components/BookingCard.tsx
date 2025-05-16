@@ -1,16 +1,25 @@
 import { useState } from "react";
-import { Booking } from "../api/bookingApi";
+import { Booking } from "../api/userApi/bookingApi";
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import ConfirmModal from "./ConfirmModal";
+import { Link } from "react-router-dom";
 
 interface BookingCard {
   booking: Booking;
   onEdit: (booking: Booking) => void;
   onCancel: (id: number) => void;
+  hasReview: boolean;
+  onReviewClick: (booking: Booking) => void;
 }
 
-function BookingCard({ booking, onEdit, onCancel }: BookingCard) {
+function BookingCard({
+  booking,
+  onEdit,
+  onCancel,
+  hasReview,
+  onReviewClick,
+}: BookingCard) {
   const [showConfirm, setShowConfirm] = useState(false);
   const {
     check_in,
@@ -65,11 +74,19 @@ function BookingCard({ booking, onEdit, onCancel }: BookingCard) {
           message="Do you want to delete this booking?"
           onConfirm={() => {
             onCancel(booking_id);
-            setShowConfirm(false)
+            setShowConfirm(false);
           }}
           onCancel={() => setShowConfirm(false)}
         />
       )}
+      <div className="flex justify-end mt-4">
+        <Link to={hasReview ? "/review" : "/booking"}
+          onClick={() => onReviewClick(booking)}
+          className="text-sm text-green-600 hover:underline"
+        >
+          {hasReview ? "View Review" : "Write Review"}
+        </Link>
+      </div>
     </div>
   );
 }
