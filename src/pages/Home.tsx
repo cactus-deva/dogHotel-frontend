@@ -9,6 +9,7 @@ import maltese from "../assets/maltese.png";
 import pom from "../assets/pom.png";
 import poodle from "../assets/poodle.png";
 import { Link } from "react-router-dom";
+import ReviewSlide from "../components/ReviewSlide";
 
 interface Feature {
   icon: string;
@@ -144,7 +145,7 @@ function Home() {
 
       <section className="bg-[#FDF9F1] py-20 text-center px-6 rounded-xl">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#A88763] mb-4">
-          Reviews from Customers
+          <ReviewSlide />
         </h2>
       </section>
     </main>

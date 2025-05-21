@@ -26,17 +26,19 @@ function Register() {
     const nameRegex = /^[A-Za-z]+$/;
 
     if (!nameRegex.test(form.first_name) || !nameRegex.test(form.last_name)) {
-      return setMessage("Firstname and/or Lastname Must Contain Only Letters");
+      return setMessage(
+        "Firstname and/or Lastname Must Contain Only English Letters"
+      );
     }
     setIsLoading(true);
     setMessage("Register Success! Redirecting to Login...");
 
     setTimeout(() => {
-        navigate("/login");
-    },1500)
-    
+      navigate("/login");
+    }, 1500);
+
     try {
-      const response = await registerUser(form);
+      await registerUser(form);
       setMessage("Register Successfully");
       setForm({
         first_name: "",

@@ -12,8 +12,9 @@ interface BookingEditCardProps {
   availableRooms: any[];
   onUpdate: () => void;
   onCancel: () => void;
+  statusMessage: string | null;
 }
-
+console.log(FormData, 'formdata')
 export const BookingEditCard = ({
   booking,
   dogs,
@@ -24,7 +25,9 @@ export const BookingEditCard = ({
   availableRooms,
   onUpdate,
   onCancel,
+  statusMessage,
 }: BookingEditCardProps) => {
+console.log(formData, 'createFormData')
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto">
       <h3 className="text-xl font-bold text-[#A88763] mb-4">Edit Booking</h3>
@@ -96,7 +99,7 @@ export const BookingEditCard = ({
           </option>
         ))}
       </select>
-
+      <div className="text-red-400 text-sm text-center">{statusMessage}</div>
       {/* ปุ่ม */}
       <div className="flex justify-end gap-4">
         <button

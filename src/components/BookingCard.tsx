@@ -4,6 +4,7 @@ import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa";
 import ConfirmModal from "./ConfirmModal";
 import { Link } from "react-router-dom";
+import { FilterType } from "../pages/user/Booking";
 
 interface BookingCard {
   booking: Booking;
@@ -11,6 +12,7 @@ interface BookingCard {
   onCancel: (id: number) => void;
   hasReview: boolean;
   onReviewClick: (booking: Booking) => void;
+  filterType: FilterType;
 }
 
 function BookingCard({
@@ -19,6 +21,7 @@ function BookingCard({
   onCancel,
   hasReview,
   onReviewClick,
+  filterType,
 }: BookingCard) {
   const [showConfirm, setShowConfirm] = useState(false);
   const {
@@ -29,6 +32,7 @@ function BookingCard({
     price_per_night,
     booking_id,
   } = booking;
+
   const check_in_date = new Date(check_in).toLocaleDateString("en-GB", {
     day: "2-digit",
     month: "2-digit",
@@ -46,6 +50,11 @@ function BookingCard({
         (1000 * 60 * 60 * 24)
     ) || 0;
 
+  const today = new Date();
+  const checkIn = new Date(check_in);
+  checkIn.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
   return (
     <div className="w-[200px] md:w-full max-h-screen bg-white rounded-xl p-4 shadow-md text-[#3B3B3B]">
       <h3 className="text-md md:text-xl font-semibold text-[#A88763] mb-2">
@@ -61,9 +70,16 @@ function BookingCard({
       </p>
 
       <div className="flex justify-end gap-2 mt-4">
-        <button onClick={() => onEdit(booking)} title="Edit">
-          <FaPencil className="w-4 h-4 text-blue-500 hover:scale-110 transition" />
-        </button>
+        {filterType === "past" || (filterType === "all" && checkIn <= today) ? (
+          <button disabled title="Cannot edit past bookings">
+            <FaPencil className="w-4 h-4 text-gray-300 cursor-not-allowed" />
+          </button>
+        ) : (
+          <button onClick={() => onEdit(booking)} title="Edit">
+            <FaPencil className="w-4 h-4 text-blue-500 hover:scale-110 transition" />
+          </button>
+        )}
+
         <button onClick={() => setShowConfirm(true)} title="cancel">
           <FaTrash className="w-4 h-4 text-red-500 hover:scale-110 transition" />
         </button>
@@ -80,7 +96,8 @@ function BookingCard({
         />
       )}
       <div className="flex justify-end mt-4">
-        <Link to={hasReview ? "/review" : "/booking"}
+        <Link
+          to={hasReview ? "/review" : "/booking"}
           onClick={() => onReviewClick(booking)}
           className="text-sm text-green-600 hover:underline"
         >

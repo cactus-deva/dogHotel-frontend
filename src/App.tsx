@@ -12,6 +12,9 @@ import Contact from './pages/Contact';
 import Dog from './pages/user/Dog';
 import { LoadingProvider } from "./context/LoadingContext.tsx";
 import Review from './pages/user/Review.tsx';
+import AdminLogin from './pages/admin/Login.tsx';
+import AdminLayout from './pages/admin/AdminLayout.tsx';
+import AdminSignUp from './pages/admin/AdminSignUp.tsx';
 
 function App() {
 
@@ -20,6 +23,7 @@ function App() {
       <Header />
       <LoadingProvider>
         <Routes>
+          {/* Route Users */}
         <Route path="/" element={<Home />} />
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login/>} />
@@ -29,6 +33,13 @@ function App() {
         <Route path='/contact' element={<Contact />} />
         <Route path='/dog' element={<Dog />}  />
         <Route path='/review' element={<Review />} />
+        
+        {/* Route Admin */}
+           <Route path='/admin' element={<AdminLayout />}>
+              <Route path='login' element={<AdminLogin />} />
+              <Route path='signup' element={<AdminSignUp />} />
+           </Route>
+       
       </Routes>
       </LoadingProvider>
       <Footer />

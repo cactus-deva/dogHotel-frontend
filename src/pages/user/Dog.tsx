@@ -9,6 +9,7 @@ export default function DogPage() {
   const [breedList, setBreedList] = useState<string[]>([]);
   const [dogs, setDogs] = useState<DogData[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>("");
   const [formData, setFormData] = useState<Omit<DogData, "id">>({
     name: "",
     breed: "",
@@ -25,10 +26,20 @@ export default function DogPage() {
     fetchBreeds();
   }, []);
 
+   useEffect(() => {
+    if (errorMessage) {
+      const timeout = setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [errorMessage]);
+  
   const fetchBreeds = async () => {
     const res = await getDogBreeds();
     setBreedList(res);
   };
+  
   const fetchDogs = async () => {
     try {
       setIsLoading(true);
@@ -60,8 +71,8 @@ export default function DogPage() {
       });
       setShowForm(false);
       fetchDogs();
-    } catch (err) {
-      console.error("Failed to create dog", err);
+    } catch (err: any) {
+      setErrorMessage(err.response?.data?.message ?? "Failed to create dog");
     }
   };
 
@@ -125,6 +136,7 @@ export default function DogPage() {
                 className="w-full mx-3 px-2"
                 value={formData.age}
                 min={0}
+                max={15}
                 onChange={(e) =>
                   setFormData({ ...formData, age: parseInt(e.target.value) })
                 }
@@ -139,6 +151,7 @@ export default function DogPage() {
                 className="w-full mx-3 px-2"
                 value={formData.weight}
                 min={0}
+                max={100}
                 onChange={(e) =>
                   setFormData({ ...formData, weight: parseInt(e.target.value) })
                 }
@@ -159,7 +172,9 @@ export default function DogPage() {
                 }
               />
             </div>
-
+            <span className="text-sm text-red-400 text-center">
+              {errorMessage}
+            </span>
             <button
               type="submit"
               className="bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700"
@@ -170,7 +185,15 @@ export default function DogPage() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {dogs.map((dog) => (
-            <DogCard key={dog.id} dog={dog} token={token} refresh={fetchDogs} breedList={breedList} />
+            <DogCard
+              key={dog.id}
+              dog={dog}
+              token={token}
+              refresh={fetchDogs}
+              breedList={breedList}
+              errorMessage={errorMessage}
+              setErrorMessage={setErrorMessage}
+            />
           ))}
         </div>
       </div>

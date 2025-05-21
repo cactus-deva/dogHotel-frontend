@@ -7,8 +7,7 @@ function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const nameFromToken = localStorage.getItem("name");
-  const nameObj = nameFromToken ? JSON.parse(nameFromToken) : null;
+  const nameFromToken = localStorage.getItem("name")
 
   const toggleDropDown = () => {
     setShowDropDown((prev) => !prev);
@@ -21,6 +20,7 @@ function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("name")
     navigate("/login");
   };
 
@@ -70,8 +70,8 @@ function Header() {
           <button>
             <FaUserCircle className="text-3xl text-[#A88763] hover:text-[#926f4e]" />
           </button>
-          {token && nameObj && (
-            <strong className="text-md text-[#A88763]">{`Welcome ${nameObj}!`}</strong>
+          {token && nameFromToken && (
+            <strong className="text-md text-[#A88763]">{`Welcome ${nameFromToken}!`}</strong>
           )}
           {showDropDown && (
             <div

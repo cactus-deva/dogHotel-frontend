@@ -99,7 +99,7 @@ export default function Review() {
               <p className="font-semibold text-[#A88763] flex items-center gap-2">
                 Rating:
                 <span className="flex">
-                  {Array.from({ length: review.rating }).map((_, i) => (
+                  {Array.from({ length: review.rating ?? 5 }).map((_, i) => (
                     <FaStar
                       key={i}
                       className={
@@ -145,7 +145,7 @@ export default function Review() {
                 type="number"
                 min={1}
                 max={5}
-                value={formData.rating}
+                value={formData.rating ?? 5}
                 onChange={(e) =>
                   setFormData({ ...formData, rating: parseInt(e.target.value) })
                 }

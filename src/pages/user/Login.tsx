@@ -24,11 +24,12 @@ function Login() {
 
     try {
       const response = await loginUser(form);
-      const {token, userId, name} = response.data;
-     
+      const {token} = response.data;
+      const {userId, name} = response.data.data
+   
       localStorage.setItem("token", token);
       localStorage.setItem("userId", JSON.stringify(userId))
-      localStorage.setItem("name", JSON.stringify(name))
+      localStorage.setItem("name", name)
       
       setMessage("Login Successfully Redirecting...")
 

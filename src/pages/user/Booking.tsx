@@ -22,10 +22,11 @@ interface Review {
   comment: string;
 }
 
-export type RoomSize = 'S' | 'M' | 'L' | ''
+export type RoomSize = "S" | "M" | "L" | "";
+export type FilterType = "past" | "upcoming" | "all"
 
 function BookingPage() {
-  const [filterType, setFilterType] = useState<"past" | "upcoming" | "all">(
+  const [filterType, setFilterType] = useState<FilterType>(
     "all"
   );
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -35,10 +36,16 @@ function BookingPage() {
   const [editingBookingId, setEditingBookingId] = useState<number | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [dogs, setDogs] = useState<DogData[]>([]);
-  const [selectedSize, setSelectedSize] = useState<RoomSize>('');
+  const [selectedSize, setSelectedSize] = useState<RoomSize>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
-  const [formData, setFormData] = useState<CreateBookingPayload>({
+  const [createFormData, setCreateFormData] = useState<CreateBookingPayload>({
+    dog_id: "",
+    hotelroom_id: "",
+    check_in: "",
+    check_out: "",
+  });
+  const [editFormData, setEditFormData] = useState<CreateBookingPayload>({
     dog_id: "",
     hotelroom_id: "",
     check_in: "",
@@ -64,8 +71,12 @@ function BookingPage() {
       const bookingData = response.data;
       setBookings(bookingData);
       setIsLoading(false);
-    } catch (error) {
-      console.error("Error fetching bookings", error);
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setStatusMessage("Session expired. Please log in again");
+      } else {
+        setStatusMessage("Something went wrong during fetch bookings");
+      }
     }
   };
 
@@ -85,8 +96,15 @@ function BookingPage() {
 
   const handleCreateBooking = async () => {
     try {
-      const res = await createBooking(formData, token);
+      const res = await createBooking(createFormData, token);
       const message = res?.data?.message ?? "Booking created successfully";
+      setCreateFormData({
+        dog_id: "",
+        hotelroom_id: "",
+        check_in: "",
+        check_out: "",
+      });
+      setSelectedSize("");
       setStatusMessage(message);
       fetchBookings();
     } catch (error: any) {
@@ -107,10 +125,11 @@ function BookingPage() {
   }, []);
 
   const fetchAvailableRooms = async () => {
-    if (formData.check_in && formData.check_out && selectedSize) {
+    const formDataToUse = isEditing ? editFormData : createFormData;
+    if (formDataToUse.check_in && formDataToUse.check_out && selectedSize) {
       try {
-        const inDate = formData.check_in.slice(0, 10);
-        const outDate = formData.check_out.slice(0, 10);
+        const inDate = formDataToUse.check_in.slice(0, 10);
+        const outDate = formDataToUse.check_out.slice(0, 10);
 
         const res = await getAvailableRooms(
           inDate,
@@ -127,17 +146,24 @@ function BookingPage() {
 
   useEffect(() => {
     fetchAvailableRooms();
-  }, [formData.check_in, formData.check_out, selectedSize]);
+  }, [
+    createFormData.check_in,
+    createFormData.check_out,
+    selectedSize,
+    editFormData.check_in,
+    editFormData.check_out,
+  ]);
 
   const handleEdit = (booking: Booking) => {
     setIsEditing(true);
     setEditingBookingId(booking.booking_id);
-    setFormData({
-      dog_id: "",
-      hotelroom_id: "",
+    setEditFormData({
+      dog_id: String(booking.dog_id),
+      hotelroom_id: String(booking.hotelroom_id),
       check_in: booking.check_in.slice(0, 10),
       check_out: booking.check_out.slice(0, 10),
     });
+
     const roomSize =
       availableRooms.find((r) => r.name === booking.room_name)?.size || "";
     setSelectedSize(roomSize);
@@ -157,8 +183,23 @@ function BookingPage() {
 
   const handleUpdateBooking = async () => {
     if (!editingBookingId) return;
+
+    // หา booking ตัวที่กำลังแก้จาก bookings[]
+    const oldBooking = bookings.find(
+      (booking) => booking.booking_id === editingBookingId
+    );
+    if (!oldBooking) return;
+
+    //สร้าง payload ใหม่ให้เก็บค่าจาก bookings เดิมถ้าไม่มีการใส่ค่าใหม่มา
+    const updatedPayload = {
+      dog_id: editFormData.dog_id || String(oldBooking.booking_id),
+      hotelroom_id:
+        editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
+      check_in: editFormData.check_in || oldBooking.check_in.slice(0, 10),
+      check_out: editFormData.check_out || oldBooking.check_out.slice(0, 10),
+    };
     try {
-      await updateBooking(token, formData, editingBookingId);
+      await updateBooking(token, updatedPayload, editingBookingId);
       setStatusMessage("Booking Update Successfully");
       setIsEditing(false);
       setEditingBookingId(null);
@@ -169,20 +210,24 @@ function BookingPage() {
       );
     }
   };
-  //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' และfilter upcoming booking & past booking
-  const filterBookings = bookings.filter((booking) => {
-      const today = new Date().toLocaleDateString();
-    const checkOut = new Date(booking.check_out).toLocaleDateString();
-    if (filterType === "all" && booking.status === "confirmed") {
-      return booking;
-    } else if (filterType === "past" && booking.status === "confirmed") {
-      return checkOut < today;
-    } else if (filterType === "upcoming" && booking.status === "confirmed") {
-      return checkOut >= today;
-    } else {
-      return;
-    }
-  });
+  //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' และfilter past, all, upcoming events
+  const getFilteredBookings = () => {
+    const today = new Date();
+    return bookings.filter((booking) => {
+      const checkOut = new Date(booking.check_out);
+
+      if (filterType === "all" && booking.status === "confirmed") {
+        return booking;
+      } else if (filterType === "past" && booking.status === "confirmed") {
+        return checkOut < today;
+      } else if (filterType === "upcoming" && booking.status === "confirmed") {
+        return checkOut >= today;
+      } else {
+        return false;
+      }
+    });
+  };
+
   const hasReviewForBooking = (bookingId: number): boolean => {
     return reviews.some((review) => review.booking_id === bookingId);
   };
@@ -213,9 +258,12 @@ function BookingPage() {
             <strong>Check-In</strong>
             <input
               type="date"
-              value={formData.check_in}
+              value={createFormData.check_in}
               onChange={(e) =>
-                setFormData({ ...formData, check_in: e.target.value })
+                setCreateFormData({
+                  ...createFormData,
+                  check_in: e.target.value,
+                })
               }
               required
               className="mx-4"
@@ -225,9 +273,12 @@ function BookingPage() {
             <strong>Check-Out</strong>
             <input
               type="date"
-              value={formData.check_out}
+              value={createFormData.check_out}
               onChange={(e) =>
-                setFormData({ ...formData, check_out: e.target.value })
+                setCreateFormData({
+                  ...createFormData,
+                  check_out: e.target.value,
+                })
               }
               required
               className="mb-6 mx-4"
@@ -237,8 +288,10 @@ function BookingPage() {
 
         {/* เลือกหมา */}
         <select
-          value={formData.dog_id}
-          onChange={(e) => setFormData({ ...formData, dog_id: e.target.value })}
+          value={createFormData.dog_id}
+          onChange={(e) =>
+            setCreateFormData({ ...createFormData, dog_id: e.target.value })
+          }
           required
           className="w-full border border-gray-300 rounded-md p-2 mb-4"
         >
@@ -266,9 +319,12 @@ function BookingPage() {
 
         {/* แสดงห้องที่ว่าง */}
         <select
-          value={formData.hotelroom_id}
+          value={createFormData.hotelroom_id}
           onChange={(e) =>
-            setFormData({ ...formData, hotelroom_id: e.target.value })
+            setCreateFormData({
+              ...createFormData,
+              hotelroom_id: e.target.value,
+            })
           }
           required
           className="w-full border border-gray-300 rounded-md p-2 mb-4"
@@ -296,9 +352,7 @@ function BookingPage() {
         <button
           onClick={() => setFilterType("all")}
           className={`px-4 py-2 rounded-full ${
-            filterType === "all"
-              ? "bg-[#A88763] text-white"
-              : "bg-gray-200"
+            filterType === "all" ? "bg-[#A88763] text-white" : "bg-gray-200"
           }`}
         >
           All Events
@@ -323,23 +377,23 @@ function BookingPage() {
         </button>
       </div>
       {selectedBooking && (
-          <ReviewModal
-            bookingId={selectedBooking.booking_id}
-            userId={parseInt(userId || "0")}
-            token={token || ""}
-            onClose={() => setSelectedBooking(null)}
-            onSuccess={handleReviewSuccess}
-          />
-        )}
+        <ReviewModal
+          bookingId={selectedBooking.booking_id}
+          userId={parseInt(userId || "0")}
+          token={token || ""}
+          onClose={() => setSelectedBooking(null)}
+          onSuccess={handleReviewSuccess}
+        />
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-6 text-sm md:text-lg md:p-20">
-        {filterBookings.map((booking) =>
+        {getFilteredBookings().map((booking) =>
           isEditing && editingBookingId === booking.booking_id ? (
             <BookingEditCard
               key={booking.booking_id}
               booking={booking}
               dogs={dogs}
-              formData={formData}
-              setFormData={setFormData}
+              formData={editFormData}
+              setFormData={setEditFormData}
               selectedSize={selectedSize}
               setSelectedSize={setSelectedSize}
               availableRooms={availableRooms}
@@ -348,6 +402,7 @@ function BookingPage() {
                 setIsEditing(false);
                 setEditingBookingId(null);
               }}
+              statusMessage={statusMessage}
             />
           ) : (
             <BookingCard
@@ -357,6 +412,7 @@ function BookingPage() {
               onCancel={handleCancelBooking}
               hasReview={hasReviewForBooking(booking.booking_id)}
               onReviewClick={handleReviewClick}
+              filterType={filterType}
             />
           )
         )}

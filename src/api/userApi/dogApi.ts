@@ -83,7 +83,6 @@ export const getDogBreeds = async (): Promise<string[]> => {
           );
         }
       }
-      console.log(breeds.sort())
       return breeds.sort();
     } catch (error) {
       console.error("Failed to fetch dog breeds", error);

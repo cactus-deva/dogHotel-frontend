@@ -8,14 +8,11 @@ interface DogCardProps {
   token: string | null;
   refresh: () => void;
   breedList: string[];
+  errorMessage: string | null;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-function DogCard({
-  dog,
-  token,
-  refresh,
-  breedList,
-}: DogCardProps) {
+function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage }: DogCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [formData, setFormData] = useState<DogData>({
@@ -28,6 +25,15 @@ function DogCard({
 
   const handleUpdate = async () => {
     try {
+      if (
+        !formData.name ||
+        !formData.breed ||
+        !formData.age ||
+        !formData.weight
+      ) {
+        setErrorMessage("Name, Breed, Age, Weight is required");
+        return;
+      }
       const updateData = {
         ...formData,
         health_conditions: formData.health_conditions?.trim() || "none",
@@ -67,7 +73,6 @@ function DogCard({
               required
             />
           </div>
-
           <div className="flex">
             <span>Breed</span>
             <select
@@ -130,7 +135,9 @@ function DogCard({
               className="w-full mx-1 px-1"
             />
           </div>
-
+          <span className="text-sm text-red-400 text-center">
+            {errorMessage}
+          </span>
           <div className="flex gap-2">
             <button
               onClick={handleUpdate}

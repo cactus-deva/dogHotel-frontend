@@ -19,6 +19,8 @@ export interface Booking {
   total_price: number;
   status: BookingStatus;
   price_per_night: number;
+  dog_id: number;
+  hotelroom_id: number;
 }
 
 type BookingStatus = 'confirmed' | 'cancelled'

@@ -86,7 +86,6 @@ function Profile() {
                     <strong>Phone:</strong> {userData.phone}
                   </li>
                 </ul>
-
                 <div className="flex justify-center gap-4 mt-6">
                   <button
                     onClick={() => setIsEditing(true)}
@@ -101,6 +100,7 @@ function Profile() {
                     Add Dog Info
                   </Link>
                 </div>
+                <strong className="text-red-500 text-center mt-5">Remarks: username & email is uneditable</strong>
               </>
             )}
           </div>
