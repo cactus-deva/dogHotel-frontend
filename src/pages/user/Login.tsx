@@ -2,6 +2,7 @@ import { useState } from "react";
 import { loginUser, LoginUserProps } from "../../api/userApi/userApi";
 import logo from "../../assets/logo.png"
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const [form, setForm] = useState<LoginUserProps>({
@@ -9,7 +10,7 @@ function Login() {
     password: ""
   })
 
-  const [message, setMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
   const [loading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true)
-    setMessage("")
+    setStatusMessage("")
 
     try {
       const response = await loginUser(form);
@@ -31,16 +32,18 @@ function Login() {
       localStorage.setItem("userId", JSON.stringify(userId))
       localStorage.setItem("name", name)
       
-      setMessage("Login Successfully Redirecting...")
+      setStatusMessage("Login Successfully Redirecting...")
 
       setTimeout(() => {
         navigate("/profile")
       },1500)
-    } catch (error:any) {
-      if(error.response?.data?.message) {
-        setMessage(error.response.data.message)
+    } catch (error:unknown) {
+      if(axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message)
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message)
       } else {
-        setMessage("Login Failed")
+        setStatusMessage("Login Failed")
       }
     }
     setIsLoading(false)
@@ -80,8 +83,8 @@ function Login() {
         >
           {loading ? "Logging In..." : "Login"}
         </button>
-        {message && (
-          <p className="text-center text-sm text-red-500">{message}</p>
+        {statusMessage && (
+          <p className="text-center text-sm text-red-500">{statusMessage}</p>
         )}
       </form>
     </section>

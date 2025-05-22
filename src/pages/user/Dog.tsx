@@ -4,12 +4,13 @@ import DogCard from "../../components/DogCard";
 import { DogData } from "../../api/userApi/dogApi";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
+import axios from "axios";
 
 export default function DogPage() {
   const [breedList, setBreedList] = useState<string[]>([]);
   const [dogs, setDogs] = useState<DogData[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>("");
+  const [statusMessage, setStatusMessage] = useState<string | null>("");
   const [formData, setFormData] = useState<Omit<DogData, "id">>({
     name: "",
     breed: "",
@@ -21,25 +22,15 @@ export default function DogPage() {
   const { setIsLoading } = useLoading();
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    fetchDogs();
-    fetchBreeds();
-  }, []);
-
-   useEffect(() => {
-    if (errorMessage) {
-      const timeout = setTimeout(() => {
-        setErrorMessage(null);
-      }, 3000);
-      return () => clearTimeout(timeout);
-    }
-  }, [errorMessage]);
-  
   const fetchBreeds = async () => {
-    const res = await getDogBreeds();
-    setBreedList(res);
+    try {
+      const res = await getDogBreeds();
+      setBreedList(res);
+    } catch (error: unknown) {
+      console.error(error, "Failed to fetch dog breeds")
+    }
   };
-  
+
   const fetchDogs = async () => {
     try {
       setIsLoading(true);
@@ -48,11 +39,25 @@ export default function DogPage() {
         setDogs(res.data);
         setIsLoading(false);
       }, 2000);
-    } catch (err) {
-      console.error("Failed to fetch dogs", err);
+    } catch (error: unknown) {
+      console.error(error, "Failed to fetch dogs")
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchDogs();
+    fetchBreeds();
+  }, []);
+
+  useEffect(() => {
+    if (statusMessage) {
+      const timeout = setTimeout(() => {
+        setStatusMessage(null);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [statusMessage]);
 
   const handleCreateDog = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,8 +76,14 @@ export default function DogPage() {
       });
       setShowForm(false);
       fetchDogs();
-    } catch (err: any) {
-      setErrorMessage(err.response?.data?.message ?? "Failed to create dog");
+    } catch (error: unknown) {
+      if(axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message)
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message)
+      } else {
+         setStatusMessage("Failed to create dog")
+      }
     }
   };
 
@@ -173,7 +184,7 @@ export default function DogPage() {
               />
             </div>
             <span className="text-sm text-red-400 text-center">
-              {errorMessage}
+              {statusMessage}
             </span>
             <button
               type="submit"
@@ -191,8 +202,8 @@ export default function DogPage() {
               token={token}
               refresh={fetchDogs}
               breedList={breedList}
-              errorMessage={errorMessage}
-              setErrorMessage={setErrorMessage}
+              statusMessage={statusMessage}
+              setStatusMessage={setStatusMessage}
             />
           ))}
         </div>

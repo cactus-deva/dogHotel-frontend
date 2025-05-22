@@ -1,4 +1,6 @@
+import axios from "axios";
 import { updateUserProfile } from "../api/userApi/userApi";
+import { useEffect } from "react";
 interface UserData {
   first_name: string;
   last_name: string;
@@ -15,7 +17,8 @@ interface ProfileEditCardProps {
   setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
   setFormData: React.Dispatch<React.SetStateAction<UserData | null>>;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
+  setStatusMessage: React.Dispatch<React.SetStateAction<string>>;
+  statusMessage: string;
 }
 
 function ProfileEditCard({
@@ -24,19 +27,55 @@ function ProfileEditCard({
   formData,
   setUserData,
   setIsEditing,
-  setMessage,
+  setStatusMessage,
+  statusMessage,
   setFormData,
 }: ProfileEditCardProps) {
+  useEffect(() => setStatusMessage(""), []);
+
   const handleSave = async () => {
+    const nameRegex = /^[A-Za-z]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (
+      formData &&
+      (!formData.first_name.trim() || !formData.last_name.trim())
+    ) {
+      setStatusMessage("Firstname and Lastname cannot be empty.");
+      return;
+    }
+    if (
+      formData &&
+      (!nameRegex.test(formData?.first_name) ||
+        !nameRegex.test(formData?.last_name))
+    ) {
+      setStatusMessage(
+        "Firstname or Lastname must contain only English letters"
+      );
+      return;
+    }
+    if (formData?.password && !passwordRegex.test(formData.password)) {
+      setStatusMessage(
+        "Password must be at least 8 characters, include upper and lower case letters, and a number."
+      );
+      return;
+    }
+
+    if (!token || !userId || !formData) {
+      setStatusMessage("something went wrong, please try to log in again");
+      return
+    }
     try {
-      if (!token || !userId || !formData) {
-        return;
-      }
       await updateUserProfile(userId, formData, token);
       setUserData(formData);
       setIsEditing(false);
-    } catch (error) {
-      setMessage("Failed to Update Profile");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("Failed to Update Profile");
+      }
     }
   };
 
@@ -54,6 +93,7 @@ function ProfileEditCard({
             )
           }
           className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          required
         />
       </div>
 
@@ -68,6 +108,7 @@ function ProfileEditCard({
             )
           }
           className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          required
         />
       </div>
       <div className="flex items-baseline">
@@ -81,6 +122,7 @@ function ProfileEditCard({
             setFormData((prev) => prev && { ...prev, phone: onlyNums });
           }}
           className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          required
         />
       </div>
 
@@ -95,7 +137,7 @@ function ProfileEditCard({
           className="w-full mb-2 border px-2 py-1 ml-2 rounded"
         />
       </div>
-
+      <div className="text-red-500 text-sm text-center">{statusMessage}</div>
       <div className="flex gap-2 mt-4 justify-center">
         <button
           onClick={handleSave}

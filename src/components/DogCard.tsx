@@ -8,11 +8,11 @@ interface DogCardProps {
   token: string | null;
   refresh: () => void;
   breedList: string[];
-  errorMessage: string | null;
-  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>
+  statusMessage: string | null;
+  setStatusMessage: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage }: DogCardProps) {
+function DogCard({ dog, token, refresh, breedList, statusMessage, setStatusMessage }: DogCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [formData, setFormData] = useState<DogData>({
@@ -31,9 +31,15 @@ function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage
         !formData.age ||
         !formData.weight
       ) {
-        setErrorMessage("Name, Breed, Age, Weight is required");
+        setStatusMessage("Name, Breed, Age, Weight is required");
         return;
       }
+
+      if(formData.age > 20 || formData.weight > 100) {
+        setStatusMessage("Limit age at 20 years, weight not over 100 kgs.")
+        return;
+      }
+
       const updateData = {
         ...formData,
         health_conditions: formData.health_conditions?.trim() || "none",
@@ -93,12 +99,12 @@ function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage
               ))}
             </select>
           </div>
-
           <div className="flex">
             <span>Age</span>
             <input
               type="number"
               min={0}
+              max={20}
               value={formData.age}
               onChange={(e) =>
                 setFormData({ ...formData, age: parseInt(e.target.value) })
@@ -114,6 +120,7 @@ function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage
               type="number"
               value={formData.weight}
               min={0}
+              max={100}
               onChange={(e) =>
                 setFormData({ ...formData, weight: parseInt(e.target.value) })
               }
@@ -136,7 +143,7 @@ function DogCard({ dog, token, refresh, breedList, errorMessage, setErrorMessage
             />
           </div>
           <span className="text-sm text-red-400 text-center">
-            {errorMessage}
+            {statusMessage}
           </span>
           <div className="flex gap-2">
             <button

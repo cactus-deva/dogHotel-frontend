@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { useLoading } from "../../context/LoadingContext";
-import { deleteReview, getMyReviews, updateReview } from "../../api/userApi/reviewApi";
+import {
+  deleteReview,
+  getMyReviews,
+  updateReview,
+} from "../../api/userApi/reviewApi";
 import ConfirmModal from "../../components/ConfirmModal";
 import GlobalLoader from "../../components/GlobalLoader";
 import { FaStar } from "react-icons/fa";
+import axios from "axios";
 
 interface Review {
   id: number;
@@ -33,7 +38,9 @@ export default function Review() {
       const res = await getMyReviews(token, userId);
       setReviews(res.data);
       setIsLoading(false);
-    } catch (error) {}
+    } catch (error: unknown) {
+      console.error(error, "failed to fetch reviews");
+    }
   };
 
   useEffect(() => {
@@ -41,6 +48,7 @@ export default function Review() {
   }, []);
 
   const handleEdit = (review: Review) => {
+    setErrorMessage("")
     setEditingReview(review);
     setFormData({
       ...formData,
@@ -51,16 +59,28 @@ export default function Review() {
 
   const handleUpdate = async () => {
     if (!editingReview) return;
+    if (formData.rating > 5 || formData.rating < 0) {
+      setErrorMessage("Input rating from 1 - 5");
+      return;
+    }
+
+    if(!formData.rating || !formData.comment) {
+      setErrorMessage("Please leave comment before sumbit")
+      return;
+    }
     try {
-      if (formData.rating > 5) {
-        setErrorMessage("Input rating from 1 - 5");
-      }
       await updateReview(token, formData, editingReview.id);
       setEditingReview(null);
       setFormData({ rating: 5, comment: "" });
       fetchReview();
-    } catch (error) {
-      console.error("Update Failed", error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to update review");
+      }
     }
   };
 
@@ -70,8 +90,14 @@ export default function Review() {
       await deleteReview(token, reviewToDelete);
       setReviewToDelete(null);
       fetchReview();
-    } catch (error) {
-      console.error("Delete Failed", error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage("Failed to delete review");
+      }
     }
   };
 
@@ -112,7 +138,8 @@ export default function Review() {
             </div>
 
             <p className="text-sm text-gray-500">
-              Reviewed on: {new Date(review.created_at).toLocaleDateString("en-GB")}
+              Reviewed on:{" "}
+              {new Date(review.created_at).toLocaleDateString("en-GB")}
             </p>
             <div className="flex gap-4">
               <button
@@ -146,6 +173,7 @@ export default function Review() {
                 min={1}
                 max={5}
                 value={formData.rating ?? 5}
+                required
                 onChange={(e) =>
                   setFormData({ ...formData, rating: parseInt(e.target.value) })
                 }
@@ -158,6 +186,7 @@ export default function Review() {
                 rows={4}
                 value={formData.comment}
                 maxLength={50}
+                required
                 onChange={(e) =>
                   setFormData({ ...formData, comment: e.target.value })
                 }

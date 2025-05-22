@@ -14,6 +14,7 @@ import GlobalLoader from "../../components/GlobalLoader";
 import { BookingEditCard } from "../../components/BookingEditCard";
 import { getMyReviews } from "../../api/userApi/reviewApi";
 import ReviewModal from "../../components/ReviewModal";
+import axios from "axios";
 
 interface Review {
   id: number;
@@ -23,12 +24,10 @@ interface Review {
 }
 
 export type RoomSize = "S" | "M" | "L" | "";
-export type FilterType = "past" | "upcoming" | "all"
+export type FilterType = "past" | "upcoming" | "all";
 
 function BookingPage() {
-  const [filterType, setFilterType] = useState<FilterType>(
-    "all"
-  );
+  const [filterType, setFilterType] = useState<FilterType>("all");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const { setIsLoading } = useLoading();
@@ -71,11 +70,13 @@ function BookingPage() {
       const bookingData = response.data;
       setBookings(bookingData);
       setIsLoading(false);
-    } catch (error: any) {
-      if (error.response?.status === 401) {
-        setStatusMessage("Session expired. Please log in again");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage("error.response?.data?.message || error.message");
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
       } else {
-        setStatusMessage("Something went wrong during fetch bookings");
+        setStatusMessage("Something went wrong during fetching bookings");
       }
     }
   };
@@ -84,37 +85,17 @@ function BookingPage() {
     try {
       const res = await getMyReviews(token, userId);
       setReviews(res.data);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching reviews", error);
     }
   };
 
   const fetchMyDogs = async (token: string | null) => {
-    const res = await getMyDogs(token);
-    setDogs(res.data);
-  };
-
-  const handleCreateBooking = async () => {
     try {
-      const res = await createBooking(createFormData, token);
-      const message = res?.data?.message ?? "Booking created successfully";
-      setCreateFormData({
-        dog_id: "",
-        hotelroom_id: "",
-        check_in: "",
-        check_out: "",
-      });
-      setSelectedSize("");
-      setStatusMessage(message);
-      fetchBookings();
-    } catch (error: any) {
-      console.error("Booking error", error.response?.data || error.message);
-
-      const fallbackMessage =
-        error?.response?.data?.message ??
-        error?.message ??
-        "unexpected error occurred";
-      setStatusMessage(fallbackMessage);
+      const res = await getMyDogs(token);
+      setDogs(res.data);
+    } catch (error: unknown) {
+      console.error("Error fetching reviews", error);
     }
   };
 
@@ -138,7 +119,7 @@ function BookingPage() {
           token
         );
         setAvailableRooms(res.data);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Error fetching rooms", error);
       }
     }
@@ -153,6 +134,31 @@ function BookingPage() {
     editFormData.check_in,
     editFormData.check_out,
   ]);
+
+  const handleCreateBooking = async () => {
+    try {
+      const res = await createBooking(createFormData, token);
+      const message = res?.data?.message ?? "Booking created successfully";
+      setCreateFormData({
+        dog_id: "",
+        hotelroom_id: "",
+        check_in: "",
+        check_out: "",
+      });
+      setSelectedSize("");
+      setStatusMessage(message);
+      fetchBookings();
+    } catch (error: unknown) {
+      console.error("Booking error", error);
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("Unexpected error occurred on create booking");
+      }
+    }
+  };
 
   const handleEdit = (booking: Booking) => {
     setIsEditing(true);
@@ -174,10 +180,14 @@ function BookingPage() {
       await cancelBooking(bookingId, token);
       setStatusMessage("Booking cancelled successfully");
       fetchBookings();
-    } catch (err: any) {
-      setStatusMessage(
-        err.response?.data?.message ?? "Failed to cancel booking"
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("Failed to cancel booking");
+      }
     }
   };
 
@@ -193,8 +203,7 @@ function BookingPage() {
     //สร้าง payload ใหม่ให้เก็บค่าจาก bookings เดิมถ้าไม่มีการใส่ค่าใหม่มา
     const updatedPayload = {
       dog_id: editFormData.dog_id || String(oldBooking.booking_id),
-      hotelroom_id:
-        editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
+      hotelroom_id: editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
       check_in: editFormData.check_in || oldBooking.check_in.slice(0, 10),
       check_out: editFormData.check_out || oldBooking.check_out.slice(0, 10),
     };
@@ -204,12 +213,18 @@ function BookingPage() {
       setIsEditing(false);
       setEditingBookingId(null);
       fetchBookings();
-    } catch (error: any) {
-      setStatusMessage(
-        error.response?.data?.message ?? "Failed to update booking"
-      );
+    } catch (error: unknown) {
+      if(axios.isAxiosError(error)){
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message)
+      } else {
+        setStatusMessage("Failed to update booking")
+      }
+      
     }
   };
+
   //กรองเอาแต่บุกกิ้งที่ status = 'confirmed' และfilter past, all, upcoming events
   const getFilteredBookings = () => {
     const today = new Date();

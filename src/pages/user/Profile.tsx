@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ProfileEditCard from "../../components/ProfileEditCard";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
+import axios from "axios";
 
 interface UserData {
   first_name: string;
@@ -16,7 +17,7 @@ interface UserData {
 
 function Profile() {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [message, setMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
   const { setIsLoading } = useLoading();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserData | null>(null);
@@ -26,7 +27,7 @@ function Profile() {
 
   useEffect(() => {
     if (!token || !userId) {
-      setMessage("Not Logged In");
+      setStatusMessage("Not Logged In");
       setIsLoading(false);
       return;
     }
@@ -42,11 +43,16 @@ function Profile() {
         setFormData(res.data.data);
         setIsLoading(false);
       }, 2000);
-    } catch (error) {
-      console.error("Failed to fetch profile", error);
-      setMessage("Failed to get profile")
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("Failed to get profile");
+      }
     }
-  }
+  };
 
   return (
     <section className="min-h-screen bg-[#FDF9F1] flex items-center justify-center px-4">
@@ -65,7 +71,8 @@ function Profile() {
                 setUserData={setUserData}
                 setFormData={setFormData}
                 setIsEditing={setIsEditing}
-                setMessage={setMessage}
+                setStatusMessage={setStatusMessage}
+                statusMessage={statusMessage}
               />
             ) : (
               <>
@@ -100,7 +107,9 @@ function Profile() {
                     Add Dog Info
                   </Link>
                 </div>
-                <strong className="text-red-500 text-center mt-5">Remarks: username & email is uneditable</strong>
+                <strong className="text-red-500 text-center mt-5">
+                  Remarks: username & email is uneditable
+                </strong>
               </>
             )}
           </div>
