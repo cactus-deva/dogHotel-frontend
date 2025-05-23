@@ -69,25 +69,25 @@ function Home() {
   ];
 
   const token = localStorage.getItem("token");
-
-  let link = "/";
-  if (token) {
-    link = "/booking";
-  } else {
-    link = "/register";
-  }
+  const bookNowLink = () => {
+    let link;
+    if (token) {
+      link = "/booking";
+    } else {
+      link = "/register";
+    }
+    return link;
+  };
 
   return (
     <main className="mt-[10px]">
       {/* Hero Section */}
       <section
         style={{
-          backgroundImage: `url(${bgImage})`
+          backgroundImage: `url(${bgImage})`,
         }}
         className="animate-fadeIn bg-cover bg-center w-full min-h-svh flex flex-col items-center justify-start rounded-md text-center px-6 py-20"
       >
-  
-
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4 pt-18 text-white opacity-70 drop-shadow-lg">
           A Luxury Stay for Your Dog
         </h1>
@@ -96,10 +96,10 @@ function Home() {
         </p>
         <div className="mt-8">
           <Link
-            to={link}
-            className="bg-[#A88763] text-white px-6 py-3 rounded-full shadow-md hover:bg-[#926f4e] transition"
+            to={bookNowLink()}
+            className="rainbow-btn bg-gradient-to-r from-red-400 via-yellow-400 to-purple-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 hover:bg-gradient-to-l"
           >
-            Book Now
+            Book Now!
           </Link>
         </div>
       </section>

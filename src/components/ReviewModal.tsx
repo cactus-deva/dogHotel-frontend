@@ -20,13 +20,9 @@ export default function ReviewModal({
 }: ReviewModalProps) {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [statusMessage, setStatusMessage] = useState("");
 
   const handleSubmit = async () => {
-    if(!comment.trim()) {
-      setErrorMessage("Please enter a comment before submit")
-      return;
-    }
     try {
       await createReview(
         { booking_id: bookingId, user_id: userId, rating, comment },
@@ -35,11 +31,12 @@ export default function ReviewModal({
       onSuccess();
       onClose();
     } catch (error: unknown) {
-      console.error("Failed to create review", error);
       if (axios.isAxiosError(error)) {
-        setErrorMessage(error.response?.data?.message || error.message);
-      } else {
-        setErrorMessage("review failed")
+        setStatusMessage(error.response?.data?.message || error.message);
+      } else if(error instanceof Error) {
+        setStatusMessage(error.message)
+      }else {
+        setStatusMessage("review failed")
       }
     }
   };
@@ -69,8 +66,7 @@ export default function ReviewModal({
           onChange={(e) => setComment(e.target.value)}
         />
 
-        {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
-
+        {statusMessage && <p className="text-red-600 text-sm">{statusMessage}</p>}
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}

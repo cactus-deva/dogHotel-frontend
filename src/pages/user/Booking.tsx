@@ -38,6 +38,7 @@ function BookingPage() {
   const [selectedSize, setSelectedSize] = useState<RoomSize>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
+  const [editSelectedSize, setEditSelectedSize] = useState<RoomSize>("")
   const [createFormData, setCreateFormData] = useState<CreateBookingPayload>({
     dog_id: "",
     hotelroom_id: "",
@@ -105,17 +106,17 @@ function BookingPage() {
     fetchReviews();
   }, []);
 
-  const fetchAvailableRooms = async () => {
+useEffect(() => {
+  const fetchRooms = async () => {
     const formDataToUse = isEditing ? editFormData : createFormData;
-    if (formDataToUse.check_in && formDataToUse.check_out && selectedSize) {
-      try {
-        const inDate = formDataToUse.check_in.slice(0, 10);
-        const outDate = formDataToUse.check_out.slice(0, 10);
+    const sizeToUse = isEditing ? editSelectedSize : selectedSize;
 
+    if (formDataToUse.check_in && formDataToUse.check_out && sizeToUse) {
+      try {
         const res = await getAvailableRooms(
-          inDate,
-          outDate,
-          selectedSize,
+          formDataToUse.check_in.slice(0, 10),
+          formDataToUse.check_out.slice(0, 10),
+          sizeToUse,
           token
         );
         setAvailableRooms(res.data);
@@ -125,15 +126,16 @@ function BookingPage() {
     }
   };
 
-  useEffect(() => {
-    fetchAvailableRooms();
-  }, [
-    createFormData.check_in,
-    createFormData.check_out,
-    selectedSize,
-    editFormData.check_in,
-    editFormData.check_out,
-  ]);
+  fetchRooms();
+}, [
+  isEditing,
+  createFormData.check_in,
+  createFormData.check_out,
+  selectedSize,
+  editFormData.check_in,
+  editFormData.check_out,
+  editSelectedSize,
+]);
 
   const handleCreateBooking = async () => {
     try {
@@ -173,6 +175,7 @@ function BookingPage() {
     const roomSize =
       availableRooms.find((r) => r.name === booking.room_name)?.size || "";
     setSelectedSize(roomSize);
+    setEditSelectedSize("")
   };
 
   const handleCancelBooking = async (bookingId: number) => {
@@ -257,7 +260,7 @@ function BookingPage() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-10 overflow-hidden">
+    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-10 overflow-hidden mt-30">
       <GlobalLoader />
       <h1 className="text-3xl font-bold text-[#A88763] mb-6 text-center">
         My Bookings
@@ -409,8 +412,8 @@ function BookingPage() {
               dogs={dogs}
               formData={editFormData}
               setFormData={setEditFormData}
-              selectedSize={selectedSize}
-              setSelectedSize={setSelectedSize}
+              selectedSize={editSelectedSize}
+              setSelectedSize={setEditSelectedSize}
               availableRooms={availableRooms}
               onUpdate={handleUpdateBooking}
               onCancel={() => {

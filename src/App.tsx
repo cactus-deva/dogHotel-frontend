@@ -8,12 +8,13 @@ import Service from "./pages/Service";
 import Contact from "./pages/Contact";
 import Dog from "./pages/user/Dog";
 import Review from "./pages/user/Review.tsx";
-import AdminLogin from "./pages/admin/Login.tsx";
+import AdminLogin from "./pages/admin/AdminLogin.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminSignUp from "./pages/admin/AdminSignUp.tsx";
 import PrivateRoute from "./routes/PrivateRoute.tsx";
 import MainLayout from "./layouts/MainLayout.tsx";
 import PageNotFound from "./routes/PageNotFound.tsx";
+import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 
 function App() {
   return (
@@ -59,13 +60,15 @@ function App() {
             }
           />
         </Route>
-        <Route path="*" element={<PageNotFound />} />
 
         {/* Route Admin */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="login" element={<AdminLogin />} />
           <Route path="signup" element={<AdminSignUp />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
         </Route>
+        
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );

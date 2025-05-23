@@ -40,6 +40,7 @@ export default function Review() {
       setIsLoading(false);
     } catch (error: unknown) {
       console.error(error, "failed to fetch reviews");
+      setIsLoading(false)
     }
   };
 
@@ -59,15 +60,7 @@ export default function Review() {
 
   const handleUpdate = async () => {
     if (!editingReview) return;
-    if (formData.rating > 5 || formData.rating < 0) {
-      setErrorMessage("Input rating from 1 - 5");
-      return;
-    }
 
-    if(!formData.rating || !formData.comment) {
-      setErrorMessage("Please leave comment before sumbit")
-      return;
-    }
     try {
       await updateReview(token, formData, editingReview.id);
       setEditingReview(null);

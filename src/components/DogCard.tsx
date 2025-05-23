@@ -2,6 +2,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import { DogData, updateDog, deleteDog } from "../api/userApi/dogApi";
 import { useState } from "react";
 import ConfirmModal from "./ConfirmModal";
+import axios from "axios";
 
 interface DogCardProps {
   dog: DogData;
@@ -9,10 +10,17 @@ interface DogCardProps {
   refresh: () => void;
   breedList: string[];
   statusMessage: string | null;
-  setStatusMessage: React.Dispatch<React.SetStateAction<string | null>>
+  setStatusMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-function DogCard({ dog, token, refresh, breedList, statusMessage, setStatusMessage }: DogCardProps) {
+function DogCard({
+  dog,
+  token,
+  refresh,
+  breedList,
+  statusMessage,
+  setStatusMessage,
+}: DogCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [formData, setFormData] = useState<DogData>({
@@ -25,18 +33,8 @@ function DogCard({ dog, token, refresh, breedList, statusMessage, setStatusMessa
 
   const handleUpdate = async () => {
     try {
-      if (
-        !formData.name ||
-        !formData.breed ||
-        !formData.age ||
-        !formData.weight
-      ) {
-        setStatusMessage("Name, Breed, Age, Weight is required");
-        return;
-      }
-
-      if(formData.age > 20 || formData.weight > 100) {
-        setStatusMessage("Limit age at 20 years, weight not over 100 kgs.")
+      if (formData.age > 20 || formData.weight > 100) {
+        setStatusMessage("Limit age at 20 years, weight not over 100 kgs.");
         return;
       }
 
@@ -47,10 +45,17 @@ function DogCard({ dog, token, refresh, breedList, statusMessage, setStatusMessa
       await updateDog(dog.id, updateData, token);
       setIsEditing(false);
       refresh();
-    } catch (error) {
-      console.error("Failed to update dog", error);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error?.response?.data?.message || error.message);
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("Failed to update dog");
+      }
     }
   };
+  
 
   const handleDelete = async () => {
     try {

@@ -22,3 +22,59 @@ body{
     animation: fadeIn 1s ease-in-out;
   }
 }
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Button-specific classes */
+.bouncy-btn:hover {
+  animation: bounce 0.5s ease infinite;
+}
+
+.shaky-btn:hover {
+  animation: shake 0.5s ease infinite;
+}
+
+.rainbow-btn {
+  background-size: 200% 200%;
+  animation: rainbow 3s ease infinite;
+}
+
+.confetti-btn:active {
+  position: relative;
+  overflow: hidden;
+}
+
+.confetti-btn:active::after {
+  content: "🎉";
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: confetti-fall 1s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) translateX(-50%) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100px) translateX(-50%) rotate(360deg); opacity: 0; }
+}
+
+.stretchy-btn:hover {
+  letter-spacing: 1px;
+}
