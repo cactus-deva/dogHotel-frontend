@@ -25,8 +25,8 @@ export default function ReviewSlide() {
   const currentReview = reviewsArray[index];
   return (
     <>
-      <strong className="mb-5">Review from Customers</strong>
-      <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md mx-auto">
+      <strong>Review from Customers</strong>
+      <div className="bg-white p-6 rounded-lg shadow-md text-center max-w-md mx-auto mt-5">
         <p className="text-[#A88763] text-md md:text-xl font-semibold">
           "{currentReview.comment}"
         </p>

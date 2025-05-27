@@ -30,13 +30,12 @@ export const BookingEditCard = ({
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto">
-      <h3 className="text-xl font-bold text-[#A88763] mb-4">Edit Booking</h3>
-
+      <h3 className="text-md md:text-xl font-bold text-[#A88763] mb-4">Edit Booking</h3>
       {/* เลือกหมา */}
       <select
         value={formData.dog_id}
         onChange={(e) => setFormData({ ...formData, dog_id: e.target.value })}
-        className="w-full border border-gray-300 rounded-md p-2 mb-4"
+        className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
       >
         <option value="">-- Select Dog --</option>
         {dogs.map((dog) => (
@@ -47,7 +46,7 @@ export const BookingEditCard = ({
       </select>
 
       {/* วันที่ */}
-      <div className="flex gap-4 mb-4">
+      <div className="flex gap-4 md:mb-4">
         <div className="flex-1">
           <label className="block text-sm font-medium">Check-In</label>
           <input
@@ -67,7 +66,7 @@ export const BookingEditCard = ({
             onChange={(e) =>
               setFormData({ ...formData, check_out: e.target.value })
             }
-            className="w-full border border-gray-300 rounded-md p-2"
+            className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
           />
         </div>
       </div>
@@ -76,7 +75,7 @@ export const BookingEditCard = ({
       <select
         value={selectedSize}
         onChange={(e) => setSelectedSize(e.target.value as RoomSize)}
-        className="w-full border border-gray-300 rounded-md p-2 mb-4"
+        className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
       >
         <option value="">-- Room Size --</option>
         <option value="S">Small</option>
@@ -101,7 +100,7 @@ export const BookingEditCard = ({
       </select>
       <div className="text-red-400 text-sm text-center">{statusMessage}</div>
       {/* ปุ่ม */}
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-4 text-xs md:text-lg">
         <button
           onClick={onCancel}
           className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"

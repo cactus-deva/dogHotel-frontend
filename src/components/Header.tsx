@@ -7,7 +7,7 @@ function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const nameFromToken = localStorage.getItem("name")
+  const username = localStorage.getItem("username")
 
   const toggleDropDown = () => {
     setShowDropDown((prev) => !prev);
@@ -31,34 +31,34 @@ function Header() {
         <img
           src={logo}
           alt="Woof! Hotel logo"
-          className="h-12 w-12 sm:h-24 sm:w-24 rounded-full"
+          className="h-12 w-12 mx-3 sm:h-24 sm:w-24 rounded-full"
         />
 
         {/* Main Nav */}
-        <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-7 text-base sm:text-lg">
-          <Link to="/" className="text-gray-700 hover:text-[#A88763]">
+        <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-7 text-sm md:text-md lg:text-lg">
+          <Link to="/" className="text-gray-700 hover:text-[#A88763] text-center">
             Home
           </Link>
-          <Link to="/service" className="text-gray-700 hover:text-[#A88763]">
+          <Link to="/service" className="text-gray-700 hover:text-[#A88763] text-center">
             Our Services
           </Link>
           {token && (
-            <Link to="/dog" className="text-gray-700 hover:text-[#A88763]">
+            <Link to="/dog" className="text-gray-700 hover:text-[#A88763] text-center">
               My Dog
             </Link>
           )}
           {token && (
-            <Link to="/booking" className="text-gray-700 hover:text-[#A88763]">
+            <Link to="/booking" className="text-gray-700 hover:text-[#A88763] text-center">
               My Booking
             </Link>
           )}
 
           {token && (
-            <Link to="/review" className="text-gray-700 hover:text-[#A88763]">
+            <Link to="/review" className="text-gray-700 hover:text-[#A88763] text-center">
               My Review
             </Link>
           )}
-          <Link to="/contact" className="text-gray-700 hover:text-[#A88763]">
+          <Link to="/contact" className="text-gray-700 hover:text-[#A88763] text-center">
             Contact
           </Link>
         </nav>
@@ -70,8 +70,8 @@ function Header() {
           <button>
             <FaUserCircle className="text-3xl text-[#A88763] hover:text-[#926f4e]" />
           </button>
-          {token && nameFromToken && (
-            <strong className="text-md text-[#A88763]">{`Welcome ${nameFromToken}!`}</strong>
+          {token && username && (
+            <strong className="text-center text-sm md:text-md text-[#A88763]">{`Welcome ${username}!`}</strong>
           )}
           {showDropDown && (
             <div

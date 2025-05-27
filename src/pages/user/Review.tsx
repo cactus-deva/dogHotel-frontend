@@ -95,9 +95,9 @@ export default function Review() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-4 md:px-20 mt-30">
+    <section className="min-h-screen bg-[#FDF9F1] py-10 px-4 md:px-20 mt-80 md:mt-30">
       <GlobalLoader />
-      <h1 className="text-3xl font-bold text-[#A88763] text-center mb-10">
+      <h1 className="text-xl md:text-3xl font-bold text-[#A88763] text-center mb-10">
         My Reviews
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -155,8 +155,8 @@ export default function Review() {
       {/* Edit Form */}
       {editingReview && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md space-y-4">
-            <h2 className="text-xl font-semibold text-[#A88763]">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md space-y-4 text-sm md:text-lg mx-10">
+            <h2 className="text-lg font-semibold text-[#A88763]">
               Edit Review
             </h2>
             <label className="block">

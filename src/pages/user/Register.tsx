@@ -75,13 +75,13 @@ function Register() {
     setIsLoading(false);
   };
   return (
-    <section className="min-h-screen bg-[#FDF9F1] flex flex-col items-center justify-center px-4 mt-10">
+    <section className="min-h-screen bg-[#FDF9F1] flex flex-col items-center justify-center px-4 mt-30 md:mt-10">
       <img src={logo} className="h-30 w-30 mb-5 rounded-full" />
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6"
       >
-        <h2 className="text-2xl font-bold text-[#A88763] text-center ">
+        <h2 className="text-xl md:text-2xl font-bold text-[#A88763] text-center ">
           Create Account
         </h2>
 

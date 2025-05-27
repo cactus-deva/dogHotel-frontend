@@ -44,7 +44,7 @@ export default function ReviewModal({
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto animate-fadeIn">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md space-y-4">
-        <h2 className="text-xl font-bold text-[#A88763]">Write Your Review</h2>
+        <h2 className="text-md md:text-xl font-bold text-[#A88763]">Write Your Review</h2>
 
         <div className="flex gap-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -67,7 +67,7 @@ export default function ReviewModal({
         />
 
         {statusMessage && <p className="text-red-600 text-sm">{statusMessage}</p>}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 text-sm md:text-md">
           <button
             onClick={onClose}
             className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"

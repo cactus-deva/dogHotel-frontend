@@ -88,7 +88,7 @@ export default function DogPage() {
   };
 
   return (
-    <section className="flex flex-col items-center w-full min-h-screen bg-[#FDF9F1] py-10 px-4">
+    <section className="flex flex-col items-center w-full min-h-screen bg-[#FDF9F1] py-10 px-4 mt-50 md:mt-10">
       <GlobalLoader />
       <div className="max-w-xl mt-40 space-y-6 w-full">
         <h2 className="text-3xl font-semibold text-center text-[#A88763]">

@@ -38,7 +38,7 @@ function BookingPage() {
   const [selectedSize, setSelectedSize] = useState<RoomSize>("");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
-  const [editSelectedSize, setEditSelectedSize] = useState<RoomSize>("")
+  const [editSelectedSize, setEditSelectedSize] = useState<RoomSize>("");
   const [createFormData, setCreateFormData] = useState<CreateBookingPayload>({
     dog_id: "",
     hotelroom_id: "",
@@ -106,36 +106,36 @@ function BookingPage() {
     fetchReviews();
   }, []);
 
-useEffect(() => {
-  const fetchRooms = async () => {
-    const formDataToUse = isEditing ? editFormData : createFormData;
-    const sizeToUse = isEditing ? editSelectedSize : selectedSize;
+  useEffect(() => {
+    const fetchRooms = async () => {
+      const formDataToUse = isEditing ? editFormData : createFormData;
+      const sizeToUse = isEditing ? editSelectedSize : selectedSize;
 
-    if (formDataToUse.check_in && formDataToUse.check_out && sizeToUse) {
-      try {
-        const res = await getAvailableRooms(
-          formDataToUse.check_in.slice(0, 10),
-          formDataToUse.check_out.slice(0, 10),
-          sizeToUse,
-          token
-        );
-        setAvailableRooms(res.data);
-      } catch (error: unknown) {
-        console.error("Error fetching rooms", error);
+      if (formDataToUse.check_in && formDataToUse.check_out && sizeToUse) {
+        try {
+          const res = await getAvailableRooms(
+            formDataToUse.check_in.slice(0, 10),
+            formDataToUse.check_out.slice(0, 10),
+            sizeToUse,
+            token
+          );
+          setAvailableRooms(res.data);
+        } catch (error: unknown) {
+          console.error("Error fetching rooms", error);
+        }
       }
-    }
-  };
+    };
 
-  fetchRooms();
-}, [
-  isEditing,
-  createFormData.check_in,
-  createFormData.check_out,
-  selectedSize,
-  editFormData.check_in,
-  editFormData.check_out,
-  editSelectedSize,
-]);
+    fetchRooms();
+  }, [
+    isEditing,
+    createFormData.check_in,
+    createFormData.check_out,
+    selectedSize,
+    editFormData.check_in,
+    editFormData.check_out,
+    editSelectedSize,
+  ]);
 
   const handleCreateBooking = async () => {
     try {
@@ -175,7 +175,7 @@ useEffect(() => {
     const roomSize =
       availableRooms.find((r) => r.name === booking.room_name)?.size || "";
     setSelectedSize(roomSize);
-    setEditSelectedSize("")
+    setEditSelectedSize("");
   };
 
   const handleCancelBooking = async (bookingId: number) => {
@@ -206,7 +206,8 @@ useEffect(() => {
     //สร้าง payload ใหม่ให้เก็บค่าจาก bookings เดิมถ้าไม่มีการใส่ค่าใหม่มา
     const updatedPayload = {
       dog_id: editFormData.dog_id || String(oldBooking.booking_id),
-      hotelroom_id: editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
+      hotelroom_id:
+        editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
       check_in: editFormData.check_in || oldBooking.check_in.slice(0, 10),
       check_out: editFormData.check_out || oldBooking.check_out.slice(0, 10),
     };
@@ -217,14 +218,13 @@ useEffect(() => {
       setEditingBookingId(null);
       fetchBookings();
     } catch (error: unknown) {
-      if(axios.isAxiosError(error)){
+      if (axios.isAxiosError(error)) {
         setStatusMessage(error.response?.data?.message || error.message);
       } else if (error instanceof Error) {
-        setStatusMessage(error.message)
+        setStatusMessage(error.message);
       } else {
-        setStatusMessage("Failed to update booking")
+        setStatusMessage("Failed to update booking");
       }
-      
     }
   };
 
@@ -260,140 +260,143 @@ useEffect(() => {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-10 overflow-hidden mt-30">
+    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-80 md:mt-30">
       <GlobalLoader />
-      <h1 className="text-3xl font-bold text-[#A88763] mb-6 text-center">
+      <h1 className="text-xl md:text-3xl font-bold text-[#A88763] text-center">
         My Bookings
       </h1>
       {/* ฟอร์มสร้าง booking */}
-      <div className="flex flex-col justify-center items-center mt-10 p-6 bg-white rounded-xl shadow-md max-w-xl mx-auto">
-        <h2 className="text-2xl font-semibold text-[#A88763] mb-4">
-          Create Booking
-        </h2>
-        {/* เลือกวันที่ */}
-        <div className="flex w-full justify-evenly">
-          <div className="flex justify-start items-baseline">
-            <strong>Check-In</strong>
-            <input
-              type="date"
-              value={createFormData.check_in}
-              onChange={(e) =>
-                setCreateFormData({
-                  ...createFormData,
-                  check_in: e.target.value,
-                })
-              }
-              required
-              className="mx-4"
-            />
+      <div className="mt-10">
+        <div className="flex flex-col justify-center items-center p-3 md:p-6 bg-white rounded-xl shadow max-w-xl mx-auto mb-6 text-xs md:text-lg">
+          <h2 className="text-lg font-semibold text-[#A88763] mb-2">
+            Create Booking
+          </h2>
+          {/* เลือกวันที่ */}
+          <div className="flex flex-col md:flex-row w-full justify-evenly">
+            <div className="flex justify-center items-baseline">
+              <strong>Check-In</strong>
+              <input
+                type="date"
+                value={createFormData.check_in}
+                onChange={(e) =>
+                  setCreateFormData({
+                    ...createFormData,
+                    check_in: e.target.value,
+                  })
+                }
+                required
+                className="mx-4"
+              />
+            </div>
+            <div className="flex justify-center items-baseline">
+              <strong>Check-Out</strong>
+              <input
+                type="date"
+                value={createFormData.check_out}
+                onChange={(e) =>
+                  setCreateFormData({
+                    ...createFormData,
+                    check_out: e.target.value,
+                  })
+                }
+                required
+                className="mb-6 mx-4"
+              />
+            </div>
           </div>
-          <div className="flex justify-end items-baseline">
-            <strong>Check-Out</strong>
-            <input
-              type="date"
-              value={createFormData.check_out}
-              onChange={(e) =>
-                setCreateFormData({
-                  ...createFormData,
-                  check_out: e.target.value,
-                })
-              }
-              required
-              className="mb-6 mx-4"
-            />
+
+          {/* เลือกหมา */}
+          <select
+            value={createFormData.dog_id}
+            onChange={(e) =>
+              setCreateFormData({ ...createFormData, dog_id: e.target.value })
+            }
+            required
+            className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
+          >
+            <option value="" disabled>
+              -- Select Your Dog --
+            </option>
+            {dogs.map((dog) => (
+              <option key={dog.id} value={dog.id}>
+                {dog.name}
+              </option>
+            ))}
+          </select>
+
+          {/* เลือกขนาดห้อง */}
+          <select
+            value={selectedSize}
+            onChange={(e) => setSelectedSize(e.target.value as RoomSize)}
+            className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
+          >
+            <option value="">-- เลือกขนาดห้อง --</option>
+            <option value="S">Small</option>
+            <option value="M">Medium</option>
+            <option value="L">Large</option>
+          </select>
+
+          {/* แสดงห้องที่ว่าง */}
+          <select
+            value={createFormData.hotelroom_id}
+            onChange={(e) =>
+              setCreateFormData({
+                ...createFormData,
+                hotelroom_id: e.target.value,
+              })
+            }
+            required
+            className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
+          >
+            <option value="">-- เลือกห้องที่ว่าง --</option>
+            {availableRooms.map((room) => (
+              <option key={room.id} value={room.id}>
+                {room.name} – ฿{room.price_per_night}
+              </option>
+            ))}
+          </select>
+          <div className="text-center text-red-600 mb-2 md:mb-4">
+            {statusMessage || ""}
           </div>
+          <button
+            onClick={handleCreateBooking}
+            className="bg-[#A88763] text-white px-6 py-1 md:py-2 rounded-full hover:bg-[#926f4e] transition"
+          >
+            Book Now
+          </button>
         </div>
 
-        {/* เลือกหมา */}
-        <select
-          value={createFormData.dog_id}
-          onChange={(e) =>
-            setCreateFormData({ ...createFormData, dog_id: e.target.value })
-          }
-          required
-          className="w-full border border-gray-300 rounded-md p-2 mb-4"
-        >
-          <option value="" disabled>
-            -- Select Your Dog --
-          </option>
-          {dogs.map((dog) => (
-            <option key={dog.id} value={dog.id}>
-              {dog.name}
-            </option>
-          ))}
-        </select>
-
-        {/* เลือกขนาดห้อง */}
-        <select
-          value={selectedSize}
-          onChange={(e) => setSelectedSize(e.target.value as RoomSize)}
-          className="w-full border border-gray-300 rounded-md p-2 mb-4"
-        >
-          <option value="">-- เลือกขนาดห้อง --</option>
-          <option value="S">Small</option>
-          <option value="M">Medium</option>
-          <option value="L">Large</option>
-        </select>
-
-        {/* แสดงห้องที่ว่าง */}
-        <select
-          value={createFormData.hotelroom_id}
-          onChange={(e) =>
-            setCreateFormData({
-              ...createFormData,
-              hotelroom_id: e.target.value,
-            })
-          }
-          required
-          className="w-full border border-gray-300 rounded-md p-2 mb-4"
-        >
-          <option value="">-- เลือกห้องที่ว่าง --</option>
-          {availableRooms.map((room) => (
-            <option key={room.id} value={room.id}>
-              {room.name} – ฿{room.price_per_night}
-            </option>
-          ))}
-        </select>
-        <div className="text-center text-red-600 mb-4">
-          {statusMessage || ""}
+        {/* การ์ดแสดง booking */}
+        <div className="flex justify-center gap-3 mb-4 text-xs md:text-lg">
+          <button
+            onClick={() => setFilterType("all")}
+            className={`px-4 py-2 rounded-full ${
+              filterType === "all" ? "bg-[#A88763] text-white" : "bg-gray-200"
+            }`}
+          >
+            All Events
+          </button>
+          <button
+            onClick={() => setFilterType("upcoming")}
+            className={`px-4 py-2 rounded-full ${
+              filterType === "upcoming"
+                ? "bg-[#A88763] text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            Upcoming Events
+          </button>
+          <button
+            onClick={() => setFilterType("past")}
+            className={`px-4 py-2 rounded-full ${
+              filterType === "past" ? "bg-[#A88763] text-white" : "bg-gray-200"
+            }`}
+          >
+            Past Events
+          </button>
         </div>
-        <button
-          onClick={handleCreateBooking}
-          className="bg-[#A88763] text-white px-6 py-2 rounded-full hover:bg-[#926f4e] transition"
-        >
-          Book Now
-        </button>
       </div>
 
-      {/* การ์ดแสดง booking */}
-      <div className="flex justify-center my-7 gap-4">
-        <button
-          onClick={() => setFilterType("all")}
-          className={`px-4 py-2 rounded-full ${
-            filterType === "all" ? "bg-[#A88763] text-white" : "bg-gray-200"
-          }`}
-        >
-          All Events
-        </button>
-        <button
-          onClick={() => setFilterType("upcoming")}
-          className={`px-4 py-2 rounded-full ${
-            filterType === "upcoming"
-              ? "bg-[#A88763] text-white"
-              : "bg-gray-200"
-          }`}
-        >
-          Upcoming Events
-        </button>
-        <button
-          onClick={() => setFilterType("past")}
-          className={`px-4 py-2 rounded-full ${
-            filterType === "past" ? "bg-[#A88763] text-white" : "bg-gray-200"
-          }`}
-        >
-          Past Events
-        </button>
-      </div>
       {selectedBooking && (
         <ReviewModal
           bookingId={selectedBooking.booking_id}

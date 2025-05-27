@@ -33,11 +33,6 @@ function DogCard({
 
   const handleUpdate = async () => {
     try {
-      if (formData.age > 20 || formData.weight > 100) {
-        setStatusMessage("Limit age at 20 years, weight not over 100 kgs.");
-        return;
-      }
-
       const updateData = {
         ...formData,
         health_conditions: formData.health_conditions?.trim() || "none",

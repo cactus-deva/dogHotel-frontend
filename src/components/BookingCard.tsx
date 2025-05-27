@@ -70,18 +70,18 @@ function BookingCard({
       </p>
 
       <div className="flex justify-end gap-2 mt-4">
-        {filterType === "past" || (filterType === "all" && checkIn <= today) ? (
+        {filterType === "past" || (filterType === "upcoming" && checkIn <= today ) || (filterType === "all" && checkIn <= today) ? (
           <button disabled title="Cannot edit past bookings">
             <FaPencil className="w-4 h-4 text-gray-300 cursor-not-allowed" />
           </button>
         ) : (
           <button onClick={() => onEdit(booking)} title="Edit">
-            <FaPencil className="w-4 h-4 text-blue-500 hover:scale-110 transition" />
+            <FaPencil className="w-3 md:w-4 h-3 md:h-4 text-blue-500 hover:scale-110 transition" />
           </button>
         )}
 
         <button onClick={() => setShowConfirm(true)} title="cancel">
-          <FaTrash className="w-4 h-4 text-red-500 hover:scale-110 transition" />
+          <FaTrash className="w-3 md:w-4 h-3 md:h-4 text-red-500 hover:scale-110 transition" />
         </button>
       </div>
 
@@ -99,7 +99,7 @@ function BookingCard({
         <Link
           to={hasReview ? "/review" : "/booking"}
           onClick={() => onReviewClick(booking)}
-          className="text-sm text-green-600 hover:underline"
+          className="text-xs md:text-sm text-green-600 hover:underline"
         >
           {hasReview ? "View Review" : "Write Review"}
         </Link>

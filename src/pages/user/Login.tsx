@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { loginUser, LoginUserProps } from "../../api/userApi/userApi";
-import logo from "../../assets/logo.png"
+import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
   const [form, setForm] = useState<LoginUserProps>({
     username: "",
-    password: ""
-  })
+    password: "",
+  });
 
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setIsLoading] = useState(false);
@@ -20,38 +20,38 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true)
-    setStatusMessage("")
+    setIsLoading(true);
+    setStatusMessage("");
 
     try {
       const response = await loginUser(form);
-      const {token} = response.data;
-      const {userId, name} = response.data.data
-   
+      const { token } = response.data;
+      const { userId, name, username } = response.data.data;
+
       localStorage.setItem("token", token);
-      localStorage.setItem("userId", JSON.stringify(userId))
-      localStorage.setItem("name", name)
+      localStorage.setItem("userId", JSON.stringify(userId));
+      localStorage.setItem("name", name);
+      localStorage.setItem("username", username);
       
-      setStatusMessage("Login Successfully Redirecting...")
+      setStatusMessage("Login Successfully Redirecting...");
 
       setTimeout(() => {
-        navigate("/profile")
-      },1500)
-    } catch (error:unknown) {
-      if(axios.isAxiosError(error)) {
-        setStatusMessage(error.response?.data?.message || error.message)
+        navigate("/profile");
+      }, 1500);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
       } else if (error instanceof Error) {
-        setStatusMessage(error.message)
+        setStatusMessage(error.message);
       } else {
-        setStatusMessage("Login Failed")
+        setStatusMessage("Login Failed");
       }
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
   return (
     <section className="min-h-screen bg-[#FDF9F1] flex flex-col items-center justify-center px-4">
-      <img src={logo}
-      className="h-40 w-40 mb-10 rounded-full" />
+      <img src={logo} className="h-40 w-40 mb-10 rounded-full" />
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-6"
@@ -92,4 +92,3 @@ function Login() {
 }
 
 export default Login;
-

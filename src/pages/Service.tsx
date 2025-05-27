@@ -43,7 +43,7 @@ function Service() {
   }, 2000);
 
   return (
-    <section className="flex flex-col bg-[#FDF9F1] py-20 min-h-screen px-6 overflow-hidden mt-20">
+    <section className="flex flex-col bg-[#FDF9F1] py-20 min-h-screen px-6 overflow-hidden mt-80 md:mt-20">
       <h2 className="text-3xl md:text-4xl font-bold text-[#A88763] text-center mb-12">
         Our Rooms & Prices
       </h2>
@@ -70,7 +70,7 @@ function Service() {
         ))}
       </div>
       <div className="flex justify-center w-full h-fit mt-30">
-        <span className="text-md md:text-3xl font-semibold text-[#A88763]">
+        <span className="text-center text-md md:text-3xl font-semibold text-[#A88763]">
           Check-in & Check-out time 09:00 - 19:00 daily
         </span>
       </div>

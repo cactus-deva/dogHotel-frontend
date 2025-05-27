@@ -59,11 +59,11 @@ function ProfileEditCard({
       );
       return;
     }
-
     if (!token || !userId || !formData) {
       setStatusMessage("something went wrong, please try to log in again");
       return
     }
+    
     try {
       await updateUserProfile(userId, formData, token);
       setUserData(formData);

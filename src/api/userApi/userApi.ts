@@ -50,7 +50,7 @@ export const loginUser = async ({username, password}: LoginUserProps) => {
   }
 }
 
-export const getUserProfile = async (userId: string, token: string | null) => {
+export const getUserProfile = async (userId: string | null, token: string | null) => {
   try {
     return await axios.get(`${BASE_URL}/profile/${userId}`, authHeader(token))
   } catch (error) {
