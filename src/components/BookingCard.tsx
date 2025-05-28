@@ -5,6 +5,7 @@ import { FaTrash } from "react-icons/fa";
 import ConfirmModal from "./ConfirmModal";
 import { Link } from "react-router-dom";
 import { FilterType } from "../pages/user/Booking";
+import { setDateTime, showDDMMYY } from "../utils/validators";
 
 interface BookingCard {
   booking: Booking;
@@ -33,27 +34,16 @@ function BookingCard({
     booking_id,
   } = booking;
 
-  const check_in_date = new Date(check_in).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-  const check_out_date = new Date(check_out).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-
+  const checkInDate = showDDMMYY(check_in);
+  const checkOutDate = showDDMMYY(check_out);
+  const today = setDateTime();
+  const checkIn = setDateTime(check_in);
+  
   const days =
     Math.ceil(
       (new Date(check_out).getTime() - new Date(check_in).getTime()) /
         (1000 * 60 * 60 * 24)
     ) || 0;
-
-  const today = new Date();
-  const checkIn = new Date(check_in);
-  checkIn.setHours(0, 0, 0, 0);
-  today.setHours(0, 0, 0, 0);
 
   return (
     <div className="w-[200px] md:w-full max-h-screen bg-white rounded-xl p-4 shadow-md text-[#3B3B3B]">
@@ -61,8 +51,8 @@ function BookingCard({
         {dog_name}
       </h3>
       <p>Room: {room_name}</p>
-      <p>Check-in: {check_in_date}</p>
-      <p>Check-out: {check_out_date}</p>
+      <p>Check-in: {checkInDate}</p>
+      <p>Check-out: {checkOutDate}</p>
       <p>Price/Night: ฿{price_per_night}</p>
       <p>Days: {days}</p>
       <p className="font-bold text-[#A88763]">
@@ -70,7 +60,9 @@ function BookingCard({
       </p>
 
       <div className="flex justify-end gap-2 mt-4">
-        {filterType === "past" || (filterType === "upcoming" && checkIn <= today ) || (filterType === "all" && checkIn <= today) ? (
+        {filterType === "past" ||
+        (filterType === "upcoming" && checkIn <= today) ||
+        (filterType === "all" && checkIn <= today) ? (
           <button disabled title="Cannot edit past bookings">
             <FaPencil className="w-4 h-4 text-gray-300 cursor-not-allowed" />
           </button>

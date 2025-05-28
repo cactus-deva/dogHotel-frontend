@@ -5,6 +5,7 @@ import ProfileEditCard from "../../components/ProfileEditCard";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 interface UserData {
   first_name: string;
@@ -21,9 +22,7 @@ function Profile() {
   const { setIsLoading } = useLoading();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserData | null>(null);
-
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const {token, userId} = useAuth()
 
   useEffect(() => {
     if (!token || !userId) {
@@ -55,7 +54,7 @@ function Profile() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] flex items-center justify-center px-4">
+    <section className="min-h-screen bg-[#FDF9F1] flex items-center justify-center px-4 mt-50 md:mt-10">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
         <div className="flex justify-center text-2xl font-bold text-[#A88763] text-center">
           My Profile

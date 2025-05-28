@@ -29,6 +29,7 @@ function AdminLogin () {
         }, 2000);
         return () => clearInterval(timeout)
     },[statusMessage])
+    
     return (
     <div className="min-h-screen flex items-center justify-center bg-[#2F2F2F] px-4">
       <div className="bg-[#3B3B3B] p-8 rounded-lg shadow-lg w-full max-w-md">

@@ -33,10 +33,10 @@ export default function ReviewModal({
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         setStatusMessage(error.response?.data?.message || error.message);
-      } else if(error instanceof Error) {
-        setStatusMessage(error.message)
-      }else {
-        setStatusMessage("review failed")
+      } else if (error instanceof Error) {
+        setStatusMessage(error.message);
+      } else {
+        setStatusMessage("review failed");
       }
     }
   };
@@ -44,7 +44,9 @@ export default function ReviewModal({
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto animate-fadeIn">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md space-y-4">
-        <h2 className="text-md md:text-xl font-bold text-[#A88763]">Write Your Review</h2>
+        <h2 className="text-md md:text-xl font-bold text-[#A88763]">
+          Write Your Review
+        </h2>
 
         <div className="flex gap-2">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -66,7 +68,9 @@ export default function ReviewModal({
           onChange={(e) => setComment(e.target.value)}
         />
 
-        {statusMessage && <p className="text-red-600 text-sm">{statusMessage}</p>}
+        {statusMessage && (
+          <p className="text-red-600 text-sm">{statusMessage}</p>
+        )}
         <div className="flex justify-end gap-2 text-sm md:text-md">
           <button
             onClick={onClose}

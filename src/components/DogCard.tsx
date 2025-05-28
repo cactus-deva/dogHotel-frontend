@@ -51,7 +51,6 @@ function DogCard({
     }
   };
   
-
   const handleDelete = async () => {
     try {
       await deleteDog(dog.id, token);

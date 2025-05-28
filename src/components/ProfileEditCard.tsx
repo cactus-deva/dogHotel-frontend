@@ -1,6 +1,7 @@
 import axios from "axios";
 import { updateUserProfile } from "../api/userApi/userApi";
 import { useEffect } from "react";
+import { isEmptyName, isName, isPassword } from "../utils/validators";
 interface UserData {
   first_name: string;
   last_name: string;
@@ -34,26 +35,24 @@ function ProfileEditCard({
   useEffect(() => setStatusMessage(""), []);
 
   const handleSave = async () => {
-    const nameRegex = /^[A-Za-z]+$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (
       formData &&
-      (!formData.first_name.trim() || !formData.last_name.trim())
+      (!isEmptyName(formData.first_name) || !isEmptyName(formData.last_name))
     ) {
       setStatusMessage("Firstname and Lastname cannot be empty.");
       return;
     }
     if (
       formData &&
-      (!nameRegex.test(formData?.first_name) ||
-        !nameRegex.test(formData?.last_name))
+      (!isName(formData?.first_name) ||
+        !isName(formData?.last_name))
     ) {
       setStatusMessage(
         "Firstname or Lastname must contain only English letters"
       );
       return;
     }
-    if (formData?.password && !passwordRegex.test(formData.password)) {
+    if (formData?.password && !isPassword(formData.password)) {
       setStatusMessage(
         "Password must be at least 8 characters, include upper and lower case letters, and a number."
       );

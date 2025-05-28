@@ -9,6 +9,7 @@ import ConfirmModal from "../../components/ConfirmModal";
 import GlobalLoader from "../../components/GlobalLoader";
 import { FaStar } from "react-icons/fa";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 interface Review {
   id: number;
@@ -24,8 +25,7 @@ interface Review {
 
 export default function Review() {
   const { setIsLoading } = useLoading();
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
+  const { token, userId } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [formData, setFormData] = useState({ rating: 5, comment: "" });
@@ -40,7 +40,7 @@ export default function Review() {
       setIsLoading(false);
     } catch (error: unknown) {
       console.error(error, "failed to fetch reviews");
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -49,7 +49,7 @@ export default function Review() {
   }, []);
 
   const handleEdit = (review: Review) => {
-    setErrorMessage("")
+    setErrorMessage("");
     setEditingReview(review);
     setFormData({
       ...formData,

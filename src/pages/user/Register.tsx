@@ -3,6 +3,7 @@ import { registerUser, UserDataProps } from "../../api/userApi/userApi";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { isName, isPassword, isUsername } from "../../utils/validators";
 
 function Register() {
   const navigate = useNavigate();
@@ -23,23 +24,20 @@ function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nameRegex = /^[A-Za-z]+$/;
-    const usernameRegex = /^[a-zA-Z0-9._]{8,20}$/;
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if (!nameRegex.test(form.first_name) || !nameRegex.test(form.last_name)) {
+   
+    if (!isName(form.first_name) || !isName(form.last_name)) {
       setStatusMessage(
         "Firstname or Lastname must contain only English letters"
       );
       return
     }
-    if (!usernameRegex.test(form.username)) {
+    if (!isUsername(form.username)) {
       setStatusMessage(
         "Username must be 8-20 characters and can contain only letters, numbers, dots, and underscores"
       );
       return
     }
-    if (!passwordRegex.test(form.password)) {
+    if (!isPassword(form.password)) {
        setStatusMessage(
         "Password must be at least 8 characters, include upper and lower case letters, and a number."
       );

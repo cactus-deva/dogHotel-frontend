@@ -15,6 +15,7 @@ import { BookingEditCard } from "../../components/BookingEditCard";
 import { getMyReviews } from "../../api/userApi/reviewApi";
 import ReviewModal from "../../components/ReviewModal";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 interface Review {
   id: number;
@@ -39,6 +40,7 @@ function BookingPage() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [editSelectedSize, setEditSelectedSize] = useState<RoomSize>("");
+  const {token, userId} = useAuth()
   const [createFormData, setCreateFormData] = useState<CreateBookingPayload>({
     dog_id: "",
     hotelroom_id: "",
@@ -51,9 +53,6 @@ function BookingPage() {
     check_in: "",
     check_out: "",
   });
-
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     if (statusMessage) {
@@ -172,8 +171,7 @@ function BookingPage() {
       check_out: booking.check_out.slice(0, 10),
     });
 
-    const roomSize =
-      availableRooms.find((r) => r.name === booking.room_name)?.size || "";
+    const roomSize = availableRooms.find((r) => r.name === booking.room_name)?.size || "";
     setSelectedSize(roomSize);
     setEditSelectedSize("");
   };
@@ -206,11 +204,11 @@ function BookingPage() {
     //สร้าง payload ใหม่ให้เก็บค่าจาก bookings เดิมถ้าไม่มีการใส่ค่าใหม่มา
     const updatedPayload = {
       dog_id: editFormData.dog_id || String(oldBooking.booking_id),
-      hotelroom_id:
-        editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
+      hotelroom_id: editFormData.hotelroom_id || String(oldBooking.hotelroom_id),
       check_in: editFormData.check_in || oldBooking.check_in.slice(0, 10),
       check_out: editFormData.check_out || oldBooking.check_out.slice(0, 10),
     };
+
     try {
       await updateBooking(token, updatedPayload, editingBookingId);
       setStatusMessage("Booking Update Successfully");

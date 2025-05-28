@@ -5,6 +5,7 @@ import { DogData } from "../../api/userApi/dogApi";
 import { useLoading } from "../../context/LoadingContext";
 import GlobalLoader from "../../components/GlobalLoader";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DogPage() {
   const [breedList, setBreedList] = useState<string[]>([]);
@@ -20,14 +21,14 @@ export default function DogPage() {
   });
 
   const { setIsLoading } = useLoading();
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
 
   const fetchBreeds = async () => {
     try {
       const res = await getDogBreeds();
       setBreedList(res);
     } catch (error: unknown) {
-      console.error(error, "Failed to fetch dog breeds")
+      console.error(error, "Failed to fetch dog breeds");
     }
   };
 
@@ -40,15 +41,17 @@ export default function DogPage() {
         setIsLoading(false);
       }, 2000);
     } catch (error: unknown) {
-      console.error(error, "Failed to fetch dogs")
+      console.error(error, "Failed to fetch dogs");
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDogs();
-    fetchBreeds();
-  }, []);
+    if (token) {
+      fetchDogs();
+      fetchBreeds();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (statusMessage) {
@@ -77,18 +80,18 @@ export default function DogPage() {
       setShowForm(false);
       fetchDogs();
     } catch (error: unknown) {
-      if(axios.isAxiosError(error)) {
-        setStatusMessage(error.response?.data?.message || error.message)
+      if (axios.isAxiosError(error)) {
+        setStatusMessage(error.response?.data?.message || error.message);
       } else if (error instanceof Error) {
-        setStatusMessage(error.message)
+        setStatusMessage(error.message);
       } else {
-         setStatusMessage("Failed to create dog")
+        setStatusMessage("Failed to create dog");
       }
     }
   };
 
   return (
-    <section className="flex flex-col items-center w-full min-h-screen bg-[#FDF9F1] py-10 px-4 mt-50 md:mt-10">
+    <section className="flex flex-col items-center w-full min-h-screen bg-[#FDF9F1] py-10 px-4 mt-50 md:mt-1">
       <GlobalLoader />
       <div className="max-w-xl mt-40 space-y-6 w-full">
         <h2 className="text-3xl font-semibold text-center text-[#A88763]">

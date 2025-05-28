@@ -2,12 +2,12 @@ import { useState } from "react";
 import logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
 
 function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const username = localStorage.getItem("username")
+  const {token, username, clearAuthData} = useAuth()
 
   const toggleDropDown = () => {
     setShowDropDown((prev) => !prev);
@@ -18,9 +18,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("name")
+    clearAuthData?.()
     navigate("/login");
   };
 

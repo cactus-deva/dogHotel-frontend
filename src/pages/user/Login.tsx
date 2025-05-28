@@ -3,6 +3,7 @@ import { loginUser, LoginUserProps } from "../../api/userApi/userApi";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const [form, setForm] = useState<LoginUserProps>({
@@ -13,6 +14,7 @@ function Login() {
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const {setAuthData} = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,17 +29,14 @@ function Login() {
       const response = await loginUser(form);
       const { token } = response.data;
       const { userId, name, username } = response.data.data;
-
-      localStorage.setItem("token", token);
-      localStorage.setItem("userId", JSON.stringify(userId));
-      localStorage.setItem("name", name);
-      localStorage.setItem("username", username);
+      setAuthData({token, userId, name, username, setAuthData, clearAuthData: () => {}})
       
       setStatusMessage("Login Successfully Redirecting...");
 
       setTimeout(() => {
         navigate("/profile");
       }, 1500);
+
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         setStatusMessage(error.response?.data?.message || error.message);
