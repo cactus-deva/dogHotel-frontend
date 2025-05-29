@@ -2,7 +2,7 @@ import samoyed from "../assets/samoyed.png";
 import logo from "../assets/logo.png";
 function Contact() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden mt-50 md:mt-10">
       {/* BG image */}
       <div
         className="animate-fadeIn w-full absolute inset-0 bg-cover bg-center"

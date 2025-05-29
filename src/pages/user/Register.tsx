@@ -5,10 +5,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { isName, isPassword, isUsername } from "../../utils/validators";
 
+interface ConfirmPassword {
+  confirmPassword : string;
+}
+
 function Register() {
   const navigate = useNavigate();
   const [statusMessage, setStatusMessage] = useState("");
   const [loading, setIsLoading] = useState(false);
+  const [confirmPassword, setConfirmPassowrd] = useState<ConfirmPassword>({confirmPassword : ""})
   const [form, setForm] = useState<UserDataProps>({
     first_name: "",
     last_name: "",
@@ -20,29 +25,34 @@ function Register() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setConfirmPassowrd({...confirmPassword, [e.target.name] : e.target.value})
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-   
+
     if (!isName(form.first_name) || !isName(form.last_name)) {
       setStatusMessage(
         "Firstname or Lastname must contain only English letters"
       );
-      return
+      return;
     }
     if (!isUsername(form.username)) {
       setStatusMessage(
         "Username must be 8-20 characters and can contain only letters, numbers, dots, and underscores"
       );
-      return
+      return;
+    }
+    if(form.password !== confirmPassword.confirmPassword) {
+      setStatusMessage("Password doesn't match")
+      return;
     }
     if (!isPassword(form.password)) {
-       setStatusMessage(
+      setStatusMessage(
         "Password must be at least 8 characters, include upper and lower case letters, and a number."
       );
-      return
-    }
+      return;
+    } 
 
     setIsLoading(true);
 
@@ -141,6 +151,18 @@ function Register() {
           name="password"
           placeholder="Password"
           value={form.password}
+          onChange={handleChange}
+          onPaste={(e) => e.preventDefault()}
+          onContextMenu={(e) => e.preventDefault()}
+          minLength={8}
+          required
+          className="w-full border border-gray-300 rouned px-4 py-2 placeholder:text-gray-400 text-[#AB8763]"
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={confirmPassword.confirmPassword}
           onChange={handleChange}
           minLength={8}
           required

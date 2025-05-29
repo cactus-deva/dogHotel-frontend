@@ -80,7 +80,7 @@ function Home() {
   };
 
   return (
-    <main className="mt-70">
+    <main className="mt-50 md:mt-10">
       {/* Hero Section */}
       <section
         style={{

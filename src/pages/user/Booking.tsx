@@ -172,8 +172,7 @@ function BookingPage() {
     });
 
     const roomSize = availableRooms.find((r) => r.name === booking.room_name)?.size || "";
-    setSelectedSize(roomSize);
-    setEditSelectedSize("");
+    setEditSelectedSize(roomSize);
   };
 
   const handleCancelBooking = async (bookingId: number) => {
@@ -258,7 +257,7 @@ function BookingPage() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-80 md:mt-30">
+    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-90 md:mt-30">
       <GlobalLoader />
       <h1 className="text-xl md:text-3xl font-bold text-[#A88763] text-center">
         My Bookings

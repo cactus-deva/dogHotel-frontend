@@ -62,7 +62,7 @@ function Header() {
         </nav>
 
         {/* Dropdown */}
-        <div className="relative flex flex-col items-center py-3"
+        <div className="relative flex flex-col items-center justify-center mx-10 w-20 h-23"
         onMouseEnter={toggleDropDown} onMouseLeave={closeDropDown}
         >
           <button>
@@ -73,7 +73,7 @@ function Header() {
           )}
           {showDropDown && (
             <div
-              className="flex flex-col items-center absolute top-10 mt-2 w-40 bg-white rounded-md shadow-lg border z-10"
+              className="flex flex-col items-center absolute top-18 mt-3 w-40 bg-white rounded-md shadow-lg border z-10"
               onMouseLeave={closeDropDown}
             >
               {token && (

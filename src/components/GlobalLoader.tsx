@@ -15,9 +15,9 @@ export default function GlobalLoader() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          className="absolute inset-0 bg-white bg-opacity-70 z-40 flex items-center justify-center"
+          className="absolute inset-0 bg-white bg-opacity-70 z-40 flex items-center justify-center mt-50 md:mt-1"
         >
-          <Lottie animationData={dogWait} loop autoplay style={{ width: 300 }} />
+          <Lottie animationData={dogWait} loop autoplay style={{ width: 250 }} />
         </motion.div>
       )}
     </AnimatePresence>
