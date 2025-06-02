@@ -148,7 +148,7 @@ export default function DogPage() {
                 type="number"
                 placeholder="Age"
                 className="w-full mx-3 px-2"
-                value={formData.age}
+                value={formData.age || ""}
                 min={0}
                 max={15}
                 onChange={(e) =>
@@ -163,7 +163,7 @@ export default function DogPage() {
                 type="number"
                 placeholder="Weight"
                 className="w-full mx-3 px-2"
-                value={formData.weight}
+                value={formData.weight || ""}
                 min={0}
                 max={100}
                 onChange={(e) =>
