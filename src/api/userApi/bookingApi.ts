@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = `${import.meta.env.VITE_API_URL}/booking`;
+const BASE_URL = `${import.meta.env.VITE_PROD_URL}/booking`;
 
 export interface CreateBookingPayload {
   dog_id: string;

@@ -16,7 +16,6 @@ interface BookingEditCardProps {
 }
 
 export const BookingEditCard = ({
-  booking,
   dogs,
   formData,
   setFormData,
