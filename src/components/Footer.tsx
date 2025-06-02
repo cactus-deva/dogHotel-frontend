@@ -94,15 +94,14 @@ function Footer() {
       <div className="mt-6 border-t border-gray-300 pt-4 text-center text-xs text-gray-500 relative">
         © 2025 Woof! Hotel. All rights reserved.
 
-        {/* Admin Login – แปะมุมขวาล่างแบบเนียนๆ */}
-        <div className="absolute right-4 bottom-4 hidden sm:block">
+        {/* <div className="absolute right-4 bottom-4 hidden sm:block">
           <Link
             to="/admin/login"
             className="text-gray-400 hover:text-gray-600 underline"
           >
             Admin Login
           </Link>
-        </div>
+        </div> */}
       </div>
     </footer>
   );
