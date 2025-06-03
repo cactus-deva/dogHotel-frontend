@@ -21,6 +21,7 @@ export interface Booking {
   price_per_night: number;
   dog_id: number;
   hotelroom_id: number;
+  size: string;
 }
 
 type BookingStatus = 'confirmed' | 'cancelled'

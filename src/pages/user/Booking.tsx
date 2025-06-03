@@ -80,13 +80,14 @@ function BookingPage() {
       }
     }
   };
-
   const fetchReviews = async () => {
     try {
+      setIsLoading(true)
       const res = await getMyReviews(token, userId);
       setReviews(res.data);
     } catch (error: unknown) {
       console.error("Error fetching reviews", error);
+      setIsLoading(false)
     }
   };
 
@@ -127,7 +128,7 @@ function BookingPage() {
 
     fetchRooms();
   }, [
-    isEditing,
+    // isEditing,
     createFormData.check_in,
     createFormData.check_out,
     selectedSize,
@@ -146,7 +147,6 @@ function BookingPage() {
         check_in: "",
         check_out: "",
       });
-      setSelectedSize("");
       setStatusMessage(message);
       fetchBookings();
     } catch (error: unknown) {
@@ -170,9 +170,7 @@ function BookingPage() {
       check_in: booking.check_in.slice(0, 10),
       check_out: booking.check_out.slice(0, 10),
     });
-
-    const roomSize = availableRooms.find((r) => r.name === booking.room_name)?.size || "";
-    setEditSelectedSize(roomSize);
+    setEditSelectedSize((booking?.size as RoomSize) || "");
   };
 
   const handleCancelBooking = async (bookingId: number) => {
@@ -327,7 +325,7 @@ function BookingPage() {
             onChange={(e) => setSelectedSize(e.target.value as RoomSize)}
             className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
           >
-            <option value="">-- เลือกขนาดห้อง --</option>
+            <option value="">-- Room Size --</option>
             <option value="S">Small</option>
             <option value="M">Medium</option>
             <option value="L">Large</option>
@@ -345,7 +343,7 @@ function BookingPage() {
             required
             className="w-full border border-gray-300 rounded-md p-2 mb-2 md:mb-4"
           >
-            <option value="">-- เลือกห้องที่ว่าง --</option>
+            <option value="">-- Available Rooms --</option>
             {availableRooms.map((room) => (
               <option key={room.id} value={room.id}>
                 {room.name} – ฿{room.price_per_night}
