@@ -128,7 +128,7 @@ function BookingPage() {
 
     fetchRooms();
   }, [
-    // isEditing,
+    isEditing,
     createFormData.check_in,
     createFormData.check_out,
     selectedSize,

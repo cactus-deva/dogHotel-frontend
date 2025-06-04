@@ -27,6 +27,7 @@ function Login() {
 
     try {
       const response = await loginUser(form);
+      console.log(response)
       const { token } = response.data;
       const { userId, name, username } = response.data.data;
       setAuthData({token, userId, name, username, setAuthData, clearAuthData: () => {}})
