@@ -43,7 +43,7 @@ function Service() {
   }, 2000);
 
   return (
-    <section className="flex flex-col bg-[#FDF9F1] py-20 min-h-screen px-6 overflow-hidden mt-60 md:mt-20">
+    <section className="flex flex-col bg-[#FDF9F1] py-20 min-h-screen px-6 overflow-hidden mt-50 sm:mt-20">
       <h2 className="text-3xl md:text-4xl font-bold text-[#A88763] text-center mb-12">
         Our Rooms & Prices
       </h2>

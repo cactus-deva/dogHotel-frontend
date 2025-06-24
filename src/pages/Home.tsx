@@ -80,7 +80,7 @@ function Home() {
   };
 
   return (
-    <main className="mt-50 md:mt-10">
+    <main className="mt-30">
       {/* Hero Section */}
       <section
         style={{
@@ -88,16 +88,17 @@ function Home() {
         }}
         className="animate-fadeIn bg-cover bg-center w-full min-h-svh flex flex-col items-center justify-start rounded-md text-center px-6 py-20"
       >
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-4 pt-18 text-white opacity-70 drop-shadow-lg">
+        <h1 className="text-3xl sm:text-4xl md:text-3xl lg:text-5xl font-bold leading-tight mb-4 pt-18 text-white drop-shadow-lg">
           A Luxury Stay for Your Dog
         </h1>
-        <p className="text-base sm:text-lg md:text-xl max-w-xl text-white opacity-70 drop-shadow-md">
+        <p className="text-base sm:text-lg md:text-xl max-w-xl text-white drop-shadow-md">
           Experience the ultimate in dog hotel care and comfort — like no other.
         </p>
         <div className="mt-8">
           <Link
             to={bookNowLink()}
-            className="rainbow-btn bg-gradient-to-r from-red-400 via-yellow-400 to-purple-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 hover:bg-gradient-to-l"
+            className="rainbow-btn bg-gradient-to-r from-red-400 via-yellow-400 to-purple-500 text-white font-bold py-3 px-6 cursor-pointer
+             rounded-full shadow-lg transform transition-all duration-500 hover:scale-105 hover:bg-gradient-to-l"
           >
             Book Now!
           </Link>

@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
-import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube} from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
 function Footer() {
   return (
-    <footer className="bg-[#EDE6D6] text-[#3B3B3B] py-6 px-4 mt-10">
+    <footer className="bg-[#EDE6D6] text-[#3B3B3B] py-6 px-4 mt-3">
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 text-center sm:text-left">
         {/* Column 1: Brand */}
-        <div>
+        <div className="flex flex-col place-items-center">
           <h4 className="text-lg font-bold mb-2">Woof! Hotel</h4>
-          <p className="text-sm">
-            A luxury stay for your beloved dog — where tails wag happily.
+          <p className="text-sm text-center">
+            A luxury stay for your beloved dog where tails wag happily.
           </p>
 
           {/* 🐾 Social Icons */}
@@ -50,9 +50,9 @@ function Footer() {
         </div>
 
         {/* Column 2: Quick Links */}
-        <div>
+        <div className="flex flex-col text-center">
           <h4 className="text-lg font-bold mb-2">Quick Links</h4>
-          <ul className="space-y-1 text-sm">
+          <ul className="space-y-1 text-sm text-center">
             <li>
               <Link to="/" className="hover:text-[#A88763]">
                 Home
@@ -60,7 +60,7 @@ function Footer() {
             </li>
             <li>
               <Link to="/service" className="hover:text-[#A88763]">
-                Our Services
+                Services
               </Link>
             </li>
             <li>
@@ -82,7 +82,7 @@ function Footer() {
         </div>
 
         {/* Column 3: Contact Info */}
-        <div>
+        <div className="flex flex-col place-items-center">
           <h4 className="text-lg font-bold mb-2">Contact</h4>
           <p className="text-sm">123 Sukhumvit Road, Bangkok</p>
           <p className="text-sm">(+66) 098 999 9999</p>
@@ -93,7 +93,6 @@ function Footer() {
       {/* Bottom line */}
       <div className="mt-6 border-t border-gray-300 pt-4 text-center text-xs text-gray-500 relative">
         © 2025 Woof! Hotel. All rights reserved.
-
         {/* <div className="absolute right-4 bottom-4 hidden sm:block">
           <Link
             to="/admin/login"

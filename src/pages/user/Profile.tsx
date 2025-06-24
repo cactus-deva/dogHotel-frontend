@@ -22,7 +22,7 @@ function Profile() {
   const { setIsLoading } = useLoading();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<UserData | null>(null);
-  const {token, userId} = useAuth()
+  const { token, userId } = useAuth();
 
   useEffect(() => {
     if (!token || !userId) {
@@ -54,14 +54,14 @@ function Profile() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] flex items-center justify-center px-4 mt-50 md:mt-10">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
+    <section className="min-h-screen bg-[#FDF9F1] flex items-center justify-center">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-xs md:w-md lg:w-lg space-y-4">
         <div className="flex justify-center text-2xl font-bold text-[#A88763] text-center">
           My Profile
         </div>
         <GlobalLoader />
         {userData && formData ? (
-          <div className="flex flex-col justify-center text-gray-500 text-sm">
+          <div className="flex flex-col justify-center text-gray-500 text-xs sm:text-sm md:text-md lg:text-lg">
             {isEditing ? (
               <ProfileEditCard
                 token={token}
@@ -75,21 +75,36 @@ function Profile() {
               />
             ) : (
               <>
-                <ul className="text-md text-[#A88763] space-y-2">
+                <ul className="text-[#A88763] space-y-2">
                   <li>
-                    <strong>Firstname:</strong> {userData.first_name}
+                    <div className="flex">
+                      <strong className="w-1/3">Firstname:</strong>
+                      <p>{userData.first_name}</p>
+                    </div>
                   </li>
                   <li>
-                    <strong>Lastname:</strong> {userData.last_name}
+                    <div className="flex">
+                      <strong className="w-1/3">Lastname:</strong>
+                      <p>{userData.last_name}</p>
+                    </div>         
                   </li>
                   <li>
-                    <strong>Username:</strong> {userData.username}
+                    <div className="flex">
+                      <strong className="w-1/3">Username:</strong> 
+                      <p>{userData.username}</p> 
+                    </div> 
                   </li>
                   <li>
-                    <strong>Email:</strong> {userData.email}
+                    <div className="flex">
+                      <strong className="w-1/3">Email:</strong>
+                      <p> {userData.email}</p> 
+                    </div>
                   </li>
                   <li>
-                    <strong>Phone:</strong> {userData.phone}
+                    <div className="flex">
+                     <strong className="w-1/3">Phone:</strong> 
+                     <p>{userData.phone}</p> 
+                    </div>
                   </li>
                 </ul>
                 <div className="flex justify-center gap-4 mt-6">

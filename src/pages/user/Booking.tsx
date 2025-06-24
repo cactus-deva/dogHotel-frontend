@@ -255,14 +255,14 @@ function BookingPage() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-6 mt-90 md:mt-30">
+    <section className="min-h-screen bg-[#FDF9F1] py-20 px-6 mt-50 sm:mt-20 md:mt-30">
       <GlobalLoader />
-      <h1 className="text-xl md:text-3xl font-bold text-[#A88763] text-center">
+      <h1 className="text-2xl md:text-3xl font-bold text-[#A88763] text-center">
         My Bookings
       </h1>
       {/* ฟอร์มสร้าง booking */}
       <div className="mt-10">
-        <div className="flex flex-col justify-center items-center p-3 md:p-6 bg-white rounded-xl shadow max-w-xl mx-auto mb-6 text-xs md:text-lg">
+        <div className="flex flex-col justify-center items-center p-3 md:p-6 bg-white rounded-xl shadow max-w-xl mx-auto mb-6 text-xs md:text-md lg:text-lg">
           <h2 className="text-lg font-semibold text-[#A88763] mb-2">
             Create Booking
           </h2>
@@ -401,7 +401,7 @@ function BookingPage() {
           onSuccess={handleReviewSuccess}
         />
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-6 text-sm md:text-lg md:p-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 place-items-center gap-6 text-sm md:text-lg p-20">
         {getFilteredBookings().map((booking) =>
           isEditing && editingBookingId === booking.booking_id ? (
             <BookingEditCard

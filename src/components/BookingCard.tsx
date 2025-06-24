@@ -46,18 +46,35 @@ function BookingCard({
     ) || 0;
 
   return (
-    <div className="w-[200px] md:w-full max-h-screen bg-white rounded-xl p-4 shadow-md text-[#3B3B3B]">
-      <h3 className="text-md md:text-xl font-semibold text-[#A88763] mb-2">
+    <div className="w-[200px] md:w-full max-h-screen bg-white rounded-xl p-4 shadow-md text-[#3B3B3B] text-sm md:text-md lg:text-lg">
+      <h3 className="font-semibold text-[#A88763] mb-2">
         {dog_name}
       </h3>
-      <p>Room: {room_name}</p>
-      <p>Check-in: {checkInDate}</p>
-      <p>Check-out: {checkOutDate}</p>
-      <p>Price/Night: ฿{price_per_night}</p>
-      <p>Days: {days}</p>
-      <p className="font-bold text-[#A88763]">
-        Total: ฿{price_per_night * days}
-      </p>
+      <div className="flex">
+        <p className="w-1/2">Room:</p>
+        <p>{room_name}</p>
+      </div>
+      <div className="flex">
+         <p className="w-1/2">Check-in:</p>
+         <p>{checkInDate}</p>
+      </div>
+     <div className="flex">
+         <p className="w-1/2">Check-out:</p>
+         <p>{checkOutDate}</p>
+      </div>
+      <div className="flex">
+        <p className="w-1/2">Price/Night:</p>
+        <p>฿{price_per_night}</p>
+      </div>
+      <div className="flex">
+        <p className="w-1/2">Days:</p>
+        <p>{days}</p>
+      </div>
+      <div className="flex font-bold text-[#A88763]">
+        <p className="w-1/2">Total:</p>
+      <p>฿{price_per_night * days}</p>
+      </div>
+      
 
       <div className="flex justify-end gap-2 mt-4">
         {filterType === "past" ||

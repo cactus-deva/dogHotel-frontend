@@ -96,13 +96,12 @@ export default function Review() {
   };
 
   return (
-    <section className="min-h-screen bg-[#FDF9F1] py-10 px-4 md:px-20 mt-90 md:mt-30">
+    <section className="min-h-screen bg-[#FDF9F1] p-20 mt-50 sm:mt-30">
       <GlobalLoader />
-      <h1 className="text-xl md:text-3xl font-bold text-[#A88763] text-center mb-10">
+      <h1 className="text-2xl md:text-3xl font-bold text-[#A88763] text-center mb-10">
         My Reviews
       </h1>
       {reviews.length === 0 ? (
-     
           <div className="gradient-text text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 animate-gradient">
             <div className="flex justify-center items-center mt-30 gap-2">
               <span className="text-2xl font-semibold">
@@ -148,13 +147,13 @@ export default function Review() {
               </p>
               <div className="flex gap-4">
                 <button
-                  className="text-blue-600 hover:underline text-sm"
+                  className="text-blue-600 hover:underline text-sm cursor-pointer"
                   onClick={() => handleEdit(review)}
                 >
                   Edit
                 </button>
                 <button
-                  className="text-red-600 hover:underline text-sm"
+                  className="text-red-600 hover:underline text-sm cursor-pointer"
                   onClick={() => setReviewToDelete(review.id)}
                 >
                   Delete

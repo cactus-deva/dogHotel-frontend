@@ -79,10 +79,10 @@ function ProfileEditCard({
   };
 
   return (
-    <div className="space-y-2">
+    <div>
       {/* Edit Form */}
       <div className="flex items-baseline">
-        <strong>Firstname</strong>
+        <strong className="w-1/3">Firstname</strong>
         <input
           type="text"
           value={formData?.first_name || ""}
@@ -91,13 +91,13 @@ function ProfileEditCard({
               (prev) => prev && { ...prev, first_name: e.target.value }
             )
           }
-          className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          className="w-full mb-2 border-1 border-amber-600 p-2 rounded-md"
           required
         />
       </div>
 
       <div className="flex items-baseline">
-        <strong>Lastname</strong>
+        <strong className="w-1/3">Lastname</strong>
         <input
           type="text"
           value={formData?.last_name || ""}
@@ -106,12 +106,12 @@ function ProfileEditCard({
               (prev) => prev && { ...prev, last_name: e.target.value }
             )
           }
-          className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          className="w-full mb-2 border-1 border-amber-600 p-2 rounded-md"
           required
         />
       </div>
       <div className="flex items-baseline">
-        <strong>Phone</strong>
+        <strong className="w-1/3">Phone</strong>
         <input
           type="tel"
           value={formData?.phone || ""}
@@ -120,20 +120,19 @@ function ProfileEditCard({
             const onlyNums = e.target.value.replace(/\D/g, "");
             setFormData((prev) => prev && { ...prev, phone: onlyNums });
           }}
-          className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          className="w-full mb-2 border-1 border-amber-600 p-2 rounded-md"
           required
         />
       </div>
-
       <div className="flex items-baseline">
-        <strong>New Password</strong>
+        <strong className="w-1/3">New Password</strong>
         <input
           type="password"
           minLength={8}
           onChange={(e) =>
             setFormData((prev) => prev && { ...prev, password: e.target.value })
           }
-          className="w-full mb-2 border px-2 py-1 ml-2 rounded"
+          className="w-full flex-1/3 mb-2 border-1 border-amber-600 p-2 rounded-md"
         />
       </div>
       <div className="text-red-500 text-sm text-center">{statusMessage}</div>

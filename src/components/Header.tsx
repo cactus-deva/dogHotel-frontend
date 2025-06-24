@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 function Header() {
   const [showDropDown, setShowDropDown] = useState(false);
   const navigate = useNavigate();
-  const {token, username, clearAuthData} = useAuth()
+  const { token, username, clearAuthData } = useAuth();
 
   const toggleDropDown = () => {
     setShowDropDown((prev) => !prev);
@@ -18,7 +18,7 @@ function Header() {
   };
 
   const handleLogout = () => {
-    clearAuthData?.()
+    clearAuthData?.();
     navigate("/login");
   };
 
@@ -26,50 +26,72 @@ function Header() {
     <header className="fixed top-0 left-0 w-full bg-white shadow-md py-4 px-6 z-50">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0">
         {/* Logo */}
-        <img
-          src={logo}
-          alt="Woof! Hotel logo"
-          className="h-12 w-12 mx-3 sm:h-24 sm:w-24 rounded-full"
-        />
+        <Link to={"/"}>
+          <img
+            src={logo}
+            alt="Woof! Hotel logo"
+            className="h-10 w-10 mx-3 sm:h-24 sm:w-24 rounded-full"
+          />
+        </Link>
 
         {/* Main Nav */}
-        <nav className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-7 text-sm md:text-md lg:text-lg">
-          <Link to="/" className="text-gray-700 hover:text-[#A88763] text-center">
+        <nav className="flex justify-around items-baseline w-full md:w-2/3 space-y-2 sm:space-y-0 text-xs md:text-md lg:text-lg">
+          <Link
+            to="/"
+            className="text-gray-700 hover:text-[#A88763] text-center"
+          >
             Home
           </Link>
-          <Link to="/service" className="text-gray-700 hover:text-[#A88763] text-center">
-            Our Services
+          <Link
+            to="/service"
+            className="text-gray-700 hover:text-[#A88763] text-center"
+          >
+            Services
           </Link>
           {token && (
-            <Link to="/dog" className="text-gray-700 hover:text-[#A88763] text-center">
+            <Link
+              to="/dog"
+              className="text-gray-700 hover:text-[#A88763] text-center"
+            >
               My Dog
             </Link>
           )}
           {token && (
-            <Link to="/booking" className="text-gray-700 hover:text-[#A88763] text-center">
-              My Booking
+            <Link
+              to="/booking"
+              className="text-gray-700 hover:text-[#A88763] text-center"
+            >
+              Bookings
             </Link>
           )}
 
           {token && (
-            <Link to="/review" className="text-gray-700 hover:text-[#A88763] text-center">
-              My Review
+            <Link
+              to="/review"
+              className="text-gray-700 hover:text-[#A88763] text-center"
+            >
+              Reviews
             </Link>
           )}
-          <Link to="/contact" className="text-gray-700 hover:text-[#A88763] text-center">
+          <Link
+            to="/contact"
+            className="text-gray-700 hover:text-[#A88763] text-center"
+          >
             Contact
           </Link>
         </nav>
 
         {/* Dropdown */}
-        <div className="relative flex flex-col items-center justify-center mx-10 w-20 h-23"
-        onMouseEnter={toggleDropDown} onMouseLeave={closeDropDown}
+        <div
+          className="relative flex flex-col items-center justify-center mx-10 w-20 h-23"
+          onMouseEnter={toggleDropDown}
+          onMouseLeave={closeDropDown}
         >
           <button>
-            <FaUserCircle className="text-3xl text-[#A88763] hover:text-[#926f4e]" />
+            <FaUserCircle className="text-3xl text-[#A88763] hover:text-[#926f4e] w-5 md:w-7 h-5 md:h-7" />
           </button>
           {token && username && (
-            <strong className="text-center text-sm md:text-md text-[#A88763]">{`Welcome ${username}!`}</strong>
+            <strong className="text-center text-xs md:text-md text-[#A88763]">{`Welcome ${username}!`}</strong>
           )}
           {showDropDown && (
             <div
@@ -104,7 +126,7 @@ function Header() {
               {token && (
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-center px-4 py-2 text-sm text-gray-700 hover:bg-[#f5f0e7]"
+                  className="block w-full text-center px-4 py-2 text-sm text-gray-700 hover:bg-[#f5f0e7] cursor-pointer"
                 >
                   Logout
                 </button>

@@ -28,8 +28,8 @@ export const BookingEditCard = ({
 }: BookingEditCardProps) => {
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto">
-      <h3 className="text-md md:text-xl font-bold text-[#A88763] mb-4">Edit Booking</h3>
+    <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-lg mx-auto text-sm md:text-md lg:text-lg">
+      <h3 className="font-bold text-[#A88763] mb-4">Edit Booking</h3>
       {/* เลือกหมา */}
       <select
         value={formData.dog_id}
@@ -45,7 +45,7 @@ export const BookingEditCard = ({
       </select>
 
       {/* วันที่ */}
-      <div className="flex gap-4 md:mb-4">
+      <div className="flex flex-wrap gap-4">
         <div className="flex-1">
           <label className="block text-sm font-medium">Check-In</label>
           <input
@@ -99,7 +99,7 @@ export const BookingEditCard = ({
       </select>
       <div className="text-red-400 text-sm text-center">{statusMessage}</div>
       {/* ปุ่ม */}
-      <div className="flex justify-end gap-4 text-xs md:text-lg">
+      <div className="flex justify-end gap-4 text-xs md:text-md lg:text-lg">
         <button
           onClick={onCancel}
           className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
